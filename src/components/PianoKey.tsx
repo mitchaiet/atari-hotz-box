@@ -20,7 +20,7 @@ const PianoKey: React.FC<PianoKeyProps> = ({
   isTopKey, 
   onPress, 
   style, 
-  whiteKeyColor = '#F5F5F5', // Changed to a soft off-white
+  whiteKeyColor = '#F5F5F5', 
   className
 }) => {
   const handleKeyPress = (e: React.MouseEvent) => {
@@ -28,7 +28,7 @@ const PianoKey: React.FC<PianoKeyProps> = ({
     onPress();
   };
 
-  const baseWhiteStyle = "hover:bg-[#E0E0E0] active:bg-[#D0D0D0]";
+  const baseWhiteStyle = "hover:bg-[#E0E0E0] active:bg-[#D0D0D0] bg-white"; // Added bg-white to ensure full fill
   const baseBlackStyle = "hover:bg-[#405a96] active:bg-[#344b7d]";
 
   return (
@@ -39,7 +39,7 @@ const PianoKey: React.FC<PianoKeyProps> = ({
           ? `h-32 bg-[#5474b4] border border-[#405a96] shadow-[0_0_10px_rgba(84,116,180,0.5)] ${baseBlackStyle}`
           : isBlack
           ? `w-6 h-24 -mx-3 z-10 bg-[#5474b4] border border-[#405a96] shadow-[0_0_10px_rgba(84,116,180,0.5)] ${baseBlackStyle}`
-          : `h-48 bg-[${whiteKeyColor}] border border-gray-200 ${baseWhiteStyle}`,
+          : `h-48 bg-white border border-gray-200 ${baseWhiteStyle}`, // Explicitly set bg-white
         className
       )}
       style={style}
