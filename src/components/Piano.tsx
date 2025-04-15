@@ -1,6 +1,7 @@
-
 import React from 'react';
 import PianoKey from './PianoKey';
+import { Separator } from './ui/separator';
+import { Button } from './ui/button';
 
 const Piano = () => {
   // Define the notes for three octaves
@@ -26,6 +27,14 @@ const Piano = () => {
 
   // Repeat the notes for three octaves
   const threeOctaves = [...notes, ...notes, ...notes];
+
+  // Calculate button width to match total piano width
+  // Total width of 36 keys = (21 white keys × 52px) = 1092px
+  // For 21 buttons, each should be approximately 52px
+  const bottomButtons = Array.from({ length: 21 }, (_, i) => ({
+    id: `button-${i + 1}`,
+    label: `${i + 1}`
+  }));
 
   const handleKeyPress = (note: string, octave: number) => {
     console.log(`Key pressed: ${note} (Octave ${octave})`);
@@ -62,6 +71,24 @@ const Piano = () => {
               />
             );
           })}
+        </div>
+
+        {/* Divider */}
+        <div className="mt-8">
+          <Separator className="bg-gray-200" />
+        </div>
+
+        {/* Bottom row of buttons */}
+        <div className="flex gap-1 mt-8">
+          {bottomButtons.map((button) => (
+            <Button 
+              key={button.id}
+              className="w-[52px] h-12 bg-[#8cb4d5] hover:bg-[#7aa2c3] active:bg-[#6890b1] border-none"
+              onClick={() => console.log(`Bottom button ${button.label} clicked`)}
+            >
+              {button.label}
+            </Button>
+          ))}
         </div>
       </div>
     </div>
