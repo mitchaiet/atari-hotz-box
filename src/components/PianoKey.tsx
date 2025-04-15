@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { sendNoteOn, sendNoteOff, mapKeyToMIDINote, sendControlChange } from '@/utils/midiUtils';
@@ -37,6 +36,7 @@ const PianoKey: React.FC<PianoKeyProps> = ({
   const [isPressed, setIsPressed] = useState(false);
   const touchIdRef = useRef<number | null>(null);
   const keyRef = useRef<HTMLDivElement>(null);
+  const lastTouchTimeRef = useRef<number>(0);
 
   const handleInteractionStart = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
@@ -94,22 +94,25 @@ const PianoKey: React.FC<PianoKeyProps> = ({
     
     if (!keyRef.current) return;
 
+    const now = Date.now();
+    if (now - lastTouchTimeRef.current < 16) { // ~60fps
+      return;
+    }
+    lastTouchTimeRef.current = now;
+
     const rect = keyRef.current.getBoundingClientRect();
     let isPointerOver = false;
 
     if ('touches' in e) {
-      // For touch events, we need to check all active touches
       const touchList = Array.from(e.touches);
-      
-      // Check if any touches are over this key
       isPointerOver = touchList.some(touch => {
-        // Get the exact position for this touch point
-        return (
+        const isOver = (
           touch.clientX >= rect.left &&
           touch.clientX <= rect.right &&
           touch.clientY >= rect.top &&
           touch.clientY <= rect.bottom
         );
+        return isOver;
       });
       
       const touchCoordinates = touchList.map(touch => 
@@ -120,7 +123,6 @@ const PianoKey: React.FC<PianoKeyProps> = ({
         `${e.type} on ${note}${octave} - coords: ${touchCoordinates} - ${isPointerOver ? 'over' : 'out'} - bounds: (${Math.round(rect.left)},${Math.round(rect.top)})-(${Math.round(rect.right)},${Math.round(rect.bottom)})`
       );
     } else {
-      // For mouse events
       const mouseEvent = e as React.MouseEvent;
       isPointerOver = (
         mouseEvent.clientX >= rect.left &&
@@ -134,7 +136,6 @@ const PianoKey: React.FC<PianoKeyProps> = ({
       );
     }
 
-    // Toggle the key state based on whether the pointer is over it
     if (isPointerOver && !isPressed) {
       handleInteractionStart(e);
     } else if (!isPointerOver && isPressed) {
