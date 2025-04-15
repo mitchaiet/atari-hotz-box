@@ -74,9 +74,9 @@ const Piano = () => {
     isTopKey: true,
     style: {
       width: '104px',
-      height: '39px',
+      height: '45px',
       backgroundColor: '#8cb4d5',
-      marginBottom: index < 15 ? '0' : '0'
+      marginBottom: '0'
     }
   }));
 
