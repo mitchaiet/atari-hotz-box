@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import PianoKey from './PianoKey';
 import { Separator } from './ui/separator';
@@ -28,6 +27,18 @@ const Piano = () => {
     };
     
     setupMidi();
+  }, []);
+
+  useEffect(() => {
+    const handleContextMenu = (e: MouseEvent) => {
+      e.preventDefault();
+    };
+
+    document.addEventListener('contextmenu', handleContextMenu);
+
+    return () => {
+      document.removeEventListener('contextmenu', handleContextMenu);
+    };
   }, []);
 
   const handleOutputChange = (outputId: string) => {
