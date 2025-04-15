@@ -1,8 +1,39 @@
-import React from 'react';
+
+import React, { useEffect, useState } from 'react';
 import PianoKey from './PianoKey';
 import { Separator } from './ui/separator';
+import { initMIDI, isMIDISupported, isMIDIAccessGranted, getMIDIOutputs, setMIDIOutput } from '@/utils/midiUtils';
+import { Button } from './ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 const Piano = () => {
+  const [midiInitialized, setMidiInitialized] = useState(false);
+  const [midiOutputs, setMidiOutputs] = useState<WebMidi.MIDIOutput[]>([]);
+  const [selectedOutput, setSelectedOutput] = useState<string>("");
+
+  // Initialize MIDI when component mounts
+  useEffect(() => {
+    const setupMidi = async () => {
+      const initialized = await initMIDI();
+      setMidiInitialized(initialized);
+      if (initialized) {
+        const outputs = getMIDIOutputs();
+        setMidiOutputs(outputs);
+        if (outputs.length > 0) {
+          setSelectedOutput(outputs[0].id);
+        }
+      }
+    };
+    
+    setupMidi();
+  }, []);
+
+  // Handle MIDI output change
+  const handleOutputChange = (outputId: string) => {
+    setSelectedOutput(outputId);
+    setMIDIOutput(outputId);
+  };
+
   // Define the notes for three octaves
   const notes = [{
     note: 'C',
@@ -116,6 +147,7 @@ const Piano = () => {
       marginBottom: '0'
     }
   }));
+  
   return (
     <div className="flex justify-center items-center min-h-screen bg-[#333333] p-4 md:p-8">
       <div className="flex flex-col rounded-lg shadow-2xl p-4 md:p-8 bg-slate-900 w-full max-w-[1400px] mx-auto 
@@ -137,6 +169,40 @@ const Piano = () => {
           <div className="text-white text-lg md:text-2xl font-bold tracking-wider">
             MIDI TRANSLATOR
           </div>
+          
+          {/* MIDI Status and Controls */}
+          <div className="flex items-center gap-2">
+            <div className={`h-3 w-3 rounded-full ${midiInitialized ? 'bg-green-500' : 'bg-red-500'}`} />
+            <span className="text-white text-sm">
+              {midiInitialized ? 'MIDI Ready' : isMIDISupported() ? 'MIDI Available' : 'MIDI Not Supported'}
+            </span>
+            
+            {midiInitialized && midiOutputs.length > 0 && (
+              <Select value={selectedOutput} onValueChange={handleOutputChange}>
+                <SelectTrigger className="w-[180px] bg-slate-800 text-white">
+                  <SelectValue placeholder="Select MIDI Output" />
+                </SelectTrigger>
+                <SelectContent className="bg-slate-800 text-white">
+                  {midiOutputs.map((output) => (
+                    <SelectItem key={output.id} value={output.id}>
+                      {output.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+            
+            {!midiInitialized && isMIDISupported() && (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => initMIDI().then(success => setMidiInitialized(success))}
+                className="text-white border-white"
+              >
+                Initialize MIDI
+              </Button>
+            )}
+          </div>
         </div>
 
         {/* Divider after logo */}
@@ -156,6 +222,8 @@ const Piano = () => {
                 onPress={() => console.log(`Far left button ${index + 1} pressed`)}
                 style={{...button.style, width: undefined}}
                 className="w-full md:w-[104px]"
+                isCCControl={true}
+                ccNumber={60 + index}
               />
             ))}
           </div>
@@ -178,6 +246,8 @@ const Piano = () => {
                       onPress={() => console.log(`Left vertical button ${groupIndex * 3 + buttonIndex + 1} pressed`)}
                       style={{...button.style, width: undefined}}
                       className="w-full md:w-[104px]"
+                      isCCControl={true}
+                      ccNumber={40 + (groupIndex * 3) + buttonIndex}
                     />
                   ))}
                 </div>
@@ -202,6 +272,8 @@ const Piano = () => {
                   onPress={() => console.log(`Top key ${index + 1} pressed`)}
                   className="flex-1"
                   style={{width: undefined}}
+                  isCCControl={true}
+                  ccNumber={index}
                 />
               ))}
             </div>
@@ -242,6 +314,8 @@ const Piano = () => {
                   onPress={() => console.log(`Bottom button ${index + 1} pressed`)}
                   className="flex-1"
                   style={{width: undefined}}
+                  isCCControl={true}
+                  ccNumber={16 + index}
                 />
               ))}
             </div>
@@ -266,6 +340,8 @@ const Piano = () => {
                   isTopKey={true}
                   onPress={() => console.log(`Final row key ${index + 1} pressed`)}
                   className="flex-1"
+                  isCCControl={true}
+                  ccNumber={80 + index}
                 />
               ))}
             </div>
@@ -289,6 +365,8 @@ const Piano = () => {
                       onPress={() => console.log(`Right vertical button ${groupIndex * 3 + buttonIndex + 1} pressed`)}
                       style={{...button.style, width: undefined}}
                       className="w-full md:w-[104px]"
+                      isCCControl={true}
+                      ccNumber={52 + (groupIndex * 3) + buttonIndex}
                     />
                   ))}
                 </div>
@@ -314,6 +392,8 @@ const Piano = () => {
                 onPress={() => console.log(`Far right button ${index + 1} pressed`)}
                 style={{...button.style, width: undefined}}
                 className="w-full md:w-[104px]"
+                isCCControl={true}
+                ccNumber={100 + index}
               />
             ))}
           </div>
