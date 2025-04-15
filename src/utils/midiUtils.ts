@@ -1,4 +1,3 @@
-
 import { toast } from "sonner";
 
 // MIDI utility functions for handling MIDI connections and messages
@@ -12,9 +11,10 @@ let midiAccessGranted = false;
 export const initMIDI = async (): Promise<boolean> => {
   try {
     if (!navigator.requestMIDIAccess) {
-      toast.error('WebMIDI is not supported in this browser', {
-        description: 'Please use a browser that supports WebMIDI (Chrome recommended)'
+      const event = new CustomEvent('midi-debug', {
+        detail: { type: 'error', message: 'WebMIDI is not supported in this browser' }
       });
+      window.dispatchEvent(event);
       return false;
     }
 
@@ -27,43 +27,44 @@ export const initMIDI = async (): Promise<boolean> => {
     // If we have at least one output, use the first one by default
     if (midiOutputs.length > 0) {
       midiOutput = midiOutputs[0];
-      toast.success('MIDI Connected', {
-        description: `Connected to MIDI output: ${midiOutput.name}`
+      const event = new CustomEvent('midi-debug', {
+        detail: { type: 'success', message: `Connected to MIDI output: ${midiOutput.name}` }
       });
+      window.dispatchEvent(event);
     } else {
-      toast.warning('No MIDI Outputs', {
-        description: 'No MIDI output devices are currently available'
+      const event = new CustomEvent('midi-debug', {
+        detail: { type: 'warning', message: 'No MIDI output devices are currently available' }
       });
+      window.dispatchEvent(event);
     }
 
     // Setup listeners for when MIDI devices connect/disconnect
     midiAccess.onstatechange = (event) => {
       const port = event.port;
-      console.log(`MIDI port ${port.name} ${port.state} (${port.type})`);
       
       if (port.type === 'output') {
         // Refresh our list of outputs
         midiOutputs = Array.from(midiAccess.outputs.values());
         
         if (port.state === 'connected') {
-          toast.success('MIDI Device Added', {
-            description: `New MIDI output available: ${port.name}`
+          const event = new CustomEvent('midi-debug', {
+            detail: { type: 'info', message: `New MIDI output available: ${port.name}` }
           });
+          window.dispatchEvent(event);
         } else if (port.state === 'disconnected') {
-          toast.warning('MIDI Device Removed', {
-            description: `MIDI output disconnected: ${port.name}`
+          const event = new CustomEvent('midi-debug', {
+            detail: { type: 'warning', message: `MIDI output disconnected: ${port.name}` }
           });
+          window.dispatchEvent(event);
+          
           // If our current output was disconnected, try to use another one
           if (midiOutput && port.id === midiOutput.id) {
             midiOutput = midiOutputs.length > 0 ? midiOutputs[0] : null;
             if (midiOutput) {
-              toast.info('MIDI Output Switched', {
-                description: `Switched to MIDI output: ${midiOutput.name}`
+              const event = new CustomEvent('midi-debug', {
+                detail: { type: 'info', message: `Switched to MIDI output: ${midiOutput.name}` }
               });
-            } else {
-              toast.error('No MIDI Outputs', {
-                description: 'No MIDI outputs are currently available'
-              });
+              window.dispatchEvent(event);
             }
           }
         }
@@ -72,9 +73,10 @@ export const initMIDI = async (): Promise<boolean> => {
 
     return true;
   } catch (error) {
-    toast.error('MIDI Initialization Error', {
-      description: error instanceof Error ? error.message : 'An unknown error occurred'
+    const event = new CustomEvent('midi-debug', {
+      detail: { type: 'error', message: error instanceof Error ? error.message : 'An unknown error occurred' }
     });
+    window.dispatchEvent(event);
     return false;
   }
 };
@@ -167,15 +169,17 @@ export const setMIDIOutput = (outputId: string): boolean => {
   const output = midiOutputs.find(output => output.id === outputId);
   if (output) {
     midiOutput = output;
-    toast.success('MIDI Output Changed', {
-      description: `MIDI output set to: ${output.name}`
+    const event = new CustomEvent('midi-debug', {
+      detail: { type: 'success', message: `MIDI output set to: ${output.name}` }
     });
+    window.dispatchEvent(event);
     return true;
   }
   
-  toast.error('MIDI Output Selection Failed', {
-    description: 'Could not find the selected MIDI output'
+  const event = new CustomEvent('midi-debug', {
+    detail: { type: 'error', message: 'Could not find the selected MIDI output' }
   });
+  window.dispatchEvent(event);
   return false;
 };
 
