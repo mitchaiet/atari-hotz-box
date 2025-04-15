@@ -1,3 +1,4 @@
+
 import React from 'react';
 import PianoKey from './PianoKey';
 import { Separator } from './ui/separator';
@@ -27,9 +28,12 @@ const Piano = () => {
   // Repeat the notes for three octaves
   const threeOctaves = [...notes, ...notes, ...notes];
 
-  // Calculate bottom row keys to match the total width of the 36-key row
-  // Total width of 36 keys = (21 white keys × 52px) = 1092px
-  const bottomButtons = threeOctaves.filter(note => !note.isBlack).slice(0, 21).map((note, index) => ({
+  // Get only white keys for the bottom row - exactly 21 keys
+  const whiteKeys = threeOctaves.filter(note => !note.isBlack).slice(0, 21);
+  
+  // Calculate the correct width for each button in the bottom row
+  // Piano white keys width = 21 × 52px = 1092px
+  const bottomButtons = whiteKeys.map((note, index) => ({
     note: `Button${index + 1}`,
     isBlack: false,
     isTopKey: true
@@ -79,7 +83,7 @@ const Piano = () => {
         </div>
 
         {/* Bottom row of buttons */}
-        <div className="flex gap-0 mt-8">
+        <div className="flex gap-0 mt-8 w-full">
           {bottomButtons.map((button, index) => (
             <PianoKey
               key={`bottom-${index}`}
