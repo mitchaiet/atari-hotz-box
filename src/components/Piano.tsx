@@ -1,6 +1,7 @@
 import React from 'react';
 import PianoKey from './PianoKey';
 import { Separator } from './ui/separator';
+
 const Piano = () => {
   // Define the notes for three octaves
   const notes = [{
@@ -117,9 +118,14 @@ const Piano = () => {
   }));
   return <div className="flex justify-center items-center min-h-screen bg-[#333333] p-8">
     <div className="flex flex-col rounded-lg shadow-2xl p-8 bg-slate-900 w-full">
-      {/* New logo row */}
-      <div className="flex justify-center mb-4">
-        <img src="/lovable-uploads/d0be4dda-e062-4ecc-8661-b1c242693570.png" alt="Atari Hotz Logo" className="h-16 w-auto object-contain" />
+      {/* New layout for logo and divider */}
+      <div className="flex items-center mb-4">
+        <img 
+          src="/lovable-uploads/d0be4dda-e062-4ecc-8661-b1c242693570.png" 
+          alt="Atari Hotz Logo" 
+          className="h-16 w-auto object-contain mr-4" 
+        />
+        <Separator className="flex-grow bg-gray-200" />
       </div>
 
       {/* Divider after logo */}
@@ -238,4 +244,5 @@ const Piano = () => {
     </div>
   </div>;
 };
+
 export default Piano;
