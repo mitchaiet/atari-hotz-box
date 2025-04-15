@@ -1,7 +1,6 @@
 import React from 'react';
 import PianoKey from './PianoKey';
 import { Separator } from './ui/separator';
-
 const Piano = () => {
   // Define the notes for three octaves
   const notes = [{
@@ -124,19 +123,14 @@ const Piano = () => {
       before:border-[8px] 
       before:border-[#221F26] 
       before:pointer-events-none 
-      before:z-[-1]"
-    >
+      before:z-[-1]">
       {/* New layout for logo and divider */}
       <div className="flex items-center justify-between mb-4">
-        <img 
-          src="/lovable-uploads/d0be4dda-e062-4ecc-8661-b1c242693570.png" 
-          alt="Atari Hotz Logo" 
-          className="h-16 w-auto object-contain mr-4" 
-        />
+        <img src="/lovable-uploads/d0be4dda-e062-4ecc-8661-b1c242693570.png" alt="Atari Hotz Logo" className="h-16 w-auto object-contain mr-4" />
         <div className="text-white text-2xl font-bold tracking-wider">
           MIDI TRANSLATOR
         </div>
-        <Separator className="absolute left-0 right-0 top-full bg-gray-200" />
+        
       </div>
 
       {/* Divider after logo */}
@@ -255,5 +249,4 @@ const Piano = () => {
     </div>
   </div>;
 };
-
 export default Piano;
