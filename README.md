@@ -1,8 +1,37 @@
-# Welcome to your Lovable project
+# HotzBox MIDI Interface
+
+A web-based MIDI interface for translating keyboard inputs into MIDI signals, inspired by the Hotz MIDI Translator.
 
 ## Project info
 
 **URL**: https://lovable.dev/projects/eb3024bb-b2a8-4a77-aace-49a8b2ea3a51
+
+## Features
+
+- **Real-time MIDI Translation**: Converts keyboard inputs into MIDI signals in real-time
+- **Debug Console**: Built-in MIDI debug console to monitor MIDI events and messages
+- **Interactive Interface**: Visual representation of the Hotz MIDI translator layout
+- **WebMIDI Support**: Leverages the Web MIDI API for direct MIDI output
+- **Customizable MIDI Output**: Select from available MIDI output devices
+- **Event Monitoring**: Real-time logging of MIDI events, touches, and system messages
+
+## Technical Details
+
+This project uses the Web MIDI API to send MIDI signals directly from the browser. The interface includes:
+
+- Vertical key columns for MIDI note input
+- Real-time MIDI event monitoring through the built-in debug console
+- Support for multiple MIDI output devices
+- Color-coded event logging for different types of MIDI messages
+
+## Browser Requirements
+
+This application requires a browser that supports the Web MIDI API. Most modern browsers support this feature, including:
+- Chrome
+- Edge
+- Opera
+
+Safari and Firefox currently have limited or no support for Web MIDI API.
 
 ## How can I edit this code?
 
@@ -71,3 +100,11 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+
+## Contributing
+
+Contributions are welcome! Feel free to submit issues and pull requests.
+
+## License
+
+© 2025 Mitch Chaiet. All rights reserved.
