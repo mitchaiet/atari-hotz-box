@@ -237,6 +237,25 @@ const Piano = () => {
             </React.Fragment>
           ))}
         </div>
+
+        {/* Rightmost new column with 16 buttons */}
+        <Separator className="mx-4 h-full bg-gray-200" orientation="vertical" />
+        
+        <div className="flex flex-col ml-8">
+          <div className="flex flex-col gap-0">
+            {sixteenButtonGroup.map((button, index) => (
+              <PianoKey
+                key={`far-right-${index}`}
+                note={button.note}
+                octave={0}
+                isBlack={false}
+                isTopKey={true}
+                onPress={() => console.log(`Far right button ${index + 1} pressed`)}
+                style={button.style}
+              />
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
