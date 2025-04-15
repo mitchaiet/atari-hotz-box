@@ -177,19 +177,15 @@ const Piano = () => {
   }));
 
   return (
-    <div 
-      className="flex justify-center items-center min-h-screen relative overflow-hidden p-4 md:p-8"
-      style={{
-        backgroundImage: `url('/lovable-uploads/496795d9-5b88-4d18-955c-737d33496e6a.png')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
-      }}
-    >
-      <div className="flex flex-col rounded-lg shadow-2xl p-4 md:p-8 bg-[rgba(10,14,27,0.7)] w-full max-w-[1400px] mx-auto 
-        border-[16px] border-[#1A2746] 
+    <div className="flex justify-center items-center min-h-screen bg-[#333333] p-4 md:p-8">
+      <div className="flex flex-col rounded-lg shadow-2xl p-4 md:p-8 bg-slate-900 w-full max-w-[1400px] mx-auto 
+        border-[16px] border-[#403E43] 
         relative 
-        z-20">
+        before:absolute before:inset-0 
+        before:border-[8px] 
+        before:border-[#221F26] 
+        before:pointer-events-none 
+        before:z-[-1]">
         
         <div className="flex items-center justify-between mb-4 w-full">
           <img 
