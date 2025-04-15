@@ -1,7 +1,6 @@
 import React from 'react';
 import PianoKey from './PianoKey';
 import { Separator } from './ui/separator';
-
 const Piano = () => {
   // Define the notes for three octaves
   const notes = [{
@@ -120,11 +119,7 @@ const Piano = () => {
     <div className="flex flex-col rounded-lg shadow-2xl p-8 bg-slate-900 w-full">
       {/* New logo row */}
       <div className="flex justify-center mb-4">
-        <img 
-          src="/lovable-uploads/d0be4dda-e062-4ecc-8661-b1c242693570.png"
-          alt="Atari Hotz Logo" 
-          className="h-16 w-auto object-contain"
-        />
+        <img src="/lovable-uploads/d0be4dda-e062-4ecc-8661-b1c242693570.png" alt="Atari Hotz Logo" className="h-16 w-auto object-contain" />
       </div>
 
       {/* Divider after logo */}
@@ -158,65 +153,61 @@ const Piano = () => {
         <div className="flex flex-col">
           {/* Atari Hotz Logo */}
           <div className="flex justify-center mb-4">
-            <img 
-              src="/lovable-uploads/d0be4dda-e062-4ecc-8661-b1c242693570.png"
-              alt="Atari Hotz Logo" 
-              className="h-16 w-auto object-contain"
-            />
+            
           </div>
 
           {/* Top row of keys */}
           <div className="flex" style={{
-          width: `${totalWidth}px`
-        }}>
+            width: `${totalWidth}px`
+          }}>
             {topKeys.map((key, index) => <PianoKey key={`top-${index}`} note={key.note} octave={0} isBlack={false} isTopKey={true} onPress={() => console.log(`Top key ${index + 1} pressed`)} style={key.style} />)}
           </div>
           
           {/* Piano keys - middle row */}
           <div className="relative flex -mt-[1px]" style={{
-          width: `${totalWidth}px`
-        }}>
+            width: `${totalWidth}px`
+          }}>
             {threeOctaves.map((noteObj, index) => {
-            const octave = Math.floor(index / 12) + 4;
-            return <PianoKey key={`${noteObj.note}-${octave}-${index}`} note={noteObj.note} octave={octave} isBlack={noteObj.isBlack} isTopKey={false} onPress={() => handleKeyPress(noteObj.note, octave)} whiteKeyColor="#8cb4d5" />;
-          })}
+              const octave = Math.floor(index / 12) + 4;
+              return <PianoKey key={`${noteObj.note}-${octave}-${index}`} note={noteObj.note} octave={octave} isBlack={noteObj.isBlack} isTopKey={false} onPress={() => handleKeyPress(noteObj.note, octave)} whiteKeyColor="#8cb4d5" />;
+            })}
           </div>
 
           {/* First Divider */}
           <div className="mt-8" style={{
-          width: `${totalWidth}px`
-        }}>
+            width: `${totalWidth}px`
+          }}>
             <Separator className="bg-gray-200" />
           </div>
 
           {/* Bottom row of buttons */}
           <div className="flex mt-8" style={{
-          width: `${totalWidth}px`
-        }}>
+            width: `${totalWidth}px`
+          }}>
             {bottomButtons.map((button, index) => <PianoKey key={`bottom-${index}`} note={button.note} octave={0} isBlack={false} isTopKey={true} onPress={() => console.log(`Bottom button ${index + 1} pressed`)} style={button.style} />)}
           </div>
 
           {/* Second Divider */}
           <div className="mt-8" style={{
-          width: `${totalWidth}px`
-        }}>
+            width: `${totalWidth}px`
+          }}>
             <Separator className="bg-gray-200" />
           </div>
 
           {/* Final row of 12 keys */}
           <div className="flex mt-8" style={{
-          width: `${totalWidth}px`
-        }}>
+            width: `${totalWidth}px`
+          }}>
             {Array.from({
-            length: 12
-          }, (_, i) => ({
-            note: `Final${i + 1}`,
-            isBlack: false,
-            isTopKey: true,
-            style: {
-              width: `${twelveKeyWidth}px`
-            }
-          })).map((key, index) => <PianoKey key={`final-${index}`} note={key.note} octave={0} isBlack={false} isTopKey={true} onPress={() => console.log(`Final row key ${index + 1} pressed`)} style={key.style} />)}
+              length: 12
+            }, (_, i) => ({
+              note: `Final${i + 1}`,
+              isBlack: false,
+              isTopKey: true,
+              style: {
+                width: `${twelveKeyWidth}px`
+              }
+            })).map((key, index) => <PianoKey key={`final-${index}`} note={key.note} octave={0} isBlack={false} isTopKey={true} onPress={() => console.log(`Final row key ${index + 1} pressed`)} style={key.style} />)}
           </div>
         </div>
 
@@ -247,5 +238,4 @@ const Piano = () => {
     </div>
   </div>;
 };
-
 export default Piano;
