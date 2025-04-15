@@ -1,10 +1,11 @@
+
 import React, { useEffect, useState } from 'react';
 import PianoKey from './PianoKey';
 import { Separator } from './ui/separator';
 import { initMIDI, isMIDISupported, getMIDIOutputs, setMIDIOutput } from '@/utils/midiUtils';
 import { Button } from './ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { Maximize, Minimize } from 'lucide-react';
+import { Maximize, Minimize, HelpCircle } from 'lucide-react';
 import MIDIOutputSelector from './MIDIOutputSelector';
 
 const Piano = () => {
@@ -199,6 +200,16 @@ const Piano = () => {
               />
             )}
             
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-slate-400 hover:text-white hover:bg-slate-800"
+              onClick={() => window.open('https://www.hotzstore.com/Support/Manuals/Hotz_Translator_III_Manual.pdf', '_blank')}
+              aria-label="View manual"
+            >
+              <HelpCircle className="h-5 w-5" />
+            </Button>
+
             <Button
               variant="ghost"
               size="icon"
