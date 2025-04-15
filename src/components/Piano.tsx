@@ -127,7 +127,6 @@ const Piano = () => {
                   octave={octave}
                   isBlack={noteObj.isBlack}
                   isTopKey={false}
-                  isMiddleRow={true}
                   onPress={() => handleKeyPress(noteObj.note, octave)}
                 />
               );
