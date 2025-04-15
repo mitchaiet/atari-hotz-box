@@ -1,10 +1,11 @@
+
 # HotzBox MIDI Interface
 
 A web-based MIDI interface for translating keyboard inputs into MIDI signals, inspired by the Hotz MIDI Translator.
 
-## Project info
+## Project Overview
 
-**URL**: https://lovable.dev/projects/eb3024bb-b2a8-4a77-aace-49a8b2ea3a51
+The HotzBox MIDI Interface is a digital recreation of the legendary Hotz MIDI Translator, a groundbreaking device developed in the early 1980s that revolutionized MIDI input and translation for musicians and electronic music producers.
 
 ## Features
 
@@ -24,6 +25,10 @@ This project uses the Web MIDI API to send MIDI signals directly from the browse
 - Support for multiple MIDI output devices
 - Color-coded event logging for different types of MIDI messages
 
+## About the Hotz MIDI Translator
+
+The original Hotz MIDI Translator was a pioneering device created by Bob Hotz in the early days of MIDI technology. It provided musicians with an unprecedented ability to translate and route MIDI signals, becoming an essential tool in electronic music studios during the 1980s.
+
 ## Browser Requirements
 
 This application requires a browser that supports the Web MIDI API. Most modern browsers support this feature, including:
@@ -33,73 +38,35 @@ This application requires a browser that supports the Web MIDI API. Most modern 
 
 Safari and Firefox currently have limited or no support for Web MIDI API.
 
-## How can I edit this code?
+## Setup and Installation
 
-There are several ways of editing your application.
+### Prerequisites
+- Node.js (v16 or later)
+- npm or yarn
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/eb3024bb-b2a8-4a77-aace-49a8b2ea3a51) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+### Installation Steps
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# Clone the repository
+git clone <repository-url>
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Navigate to project directory
+cd hotzbox-midi-interface
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
+## Technologies Used
 
 - Vite
 - TypeScript
 - React
-- shadcn-ui
+- Web MIDI API
 - Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/eb3024bb-b2a8-4a77-aace-49a8b2ea3a51) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
 
 ## Contributing
 
