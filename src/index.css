@@ -100,5 +100,41 @@
 
   body {
     @apply bg-background text-foreground;
+    background: linear-gradient(to bottom,
+      #1A1F2C 0%,
+      #1A1F2C 50%,
+      #333333 50%,
+      #333333 100%
+    );
+    position: relative;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50vh;
+    background-image: 
+      radial-gradient(2px 2px at 20px 30px, #ffffff 100%, transparent),
+      radial-gradient(2px 2px at 40px 70px, #ffffff 100%, transparent),
+      radial-gradient(2px 2px at 50px 160px, #ffffff 100%, transparent),
+      radial-gradient(2px 2px at 90px 40px, #ffffff 100%, transparent),
+      radial-gradient(2px 2px at 130px 80px, #ffffff 100%, transparent),
+      radial-gradient(2px 2px at 160px 120px, #ffffff 100%, transparent);
+    background-repeat: repeat;
+    background-size: 200px 200px;
+    opacity: 0.5;
+    animation: twinkle 5s infinite;
+    pointer-events: none;
+  }
+
+  @keyframes twinkle {
+    0% { opacity: 0.5; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.5; }
   }
 }
