@@ -111,23 +111,6 @@
     overflow-x: hidden;
   }
 
-  body::after {
-    content: '';
-    position: absolute;
-    top: 50vh;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: #ea384c;
-    box-shadow: 
-      0 0 10px #ea384c,
-      0 0 20px #ea384c,
-      0 0 30px #ea384c,
-      0 0 40px #ea384c;
-    z-index: 1;
-    pointer-events: none;
-  }
-
   body::before {
     content: '';
     position: absolute;
@@ -147,6 +130,24 @@
     opacity: 0.5;
     animation: twinkle 5s infinite;
     pointer-events: none;
+  }
+
+  body::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #ea384c;
+    box-shadow: 
+      0 0 10px #ea384c,
+      0 0 20px #ea384c,
+      0 0 30px #ea384c,
+      0 0 40px #ea384c;
+    z-index: 0;
+    pointer-events: none;
+    transform: translateY(-50%);
   }
 
   @keyframes twinkle {
