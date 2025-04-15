@@ -24,7 +24,7 @@ const PianoKey: React.FC<PianoKeyProps> = ({ note, octave, isBlack, isTopKey, on
           ? "w-[72.8px] h-32 bg-[#338899] border border-[#2A7B8D] hover:bg-[#2A7B8D] active:bg-[#1E5A6A] shadow-[0_0_10px_rgba(51,136,153,0.5)]"
           : isBlack
           ? "w-8 h-32 -mx-4 z-10 bg-[#338899] border border-[#2A7B8D] hover:bg-[#2A7B8D] active:bg-[#1E5A6A] shadow-[0_0_10px_rgba(51,136,153,0.5)]"
-          : "w-[52px] h-48 bg-[#a3e9f3] border border-gray-200 hover:bg-[#8bcfe3] active:bg-[#73b5c9]"
+          : "w-[52px] h-48 bg-[#8cb4d5] border border-gray-200 hover:bg-[#7aa2c3] active:bg-[#6890b1]"
       )}
       onMouseDown={handleKeyPress}
       role="button"
