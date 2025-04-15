@@ -14,7 +14,10 @@ const Piano = () => {
     { note: 'B', isBlack: false },
   ];
 
-  // Create array of 15 top keys
+  // Calculate width for top keys
+  // Bottom row: 36 keys total (21 white keys × 52px width)
+  // Total width of bottom row = 1092px (21 × 52px)
+  // For 15 top keys, each should be 1092/15 ≈ 72.8px
   const topKeys = Array.from({ length: 15 }, (_, i) => ({
     note: `Key${i + 1}`,
     isBlack: false,
