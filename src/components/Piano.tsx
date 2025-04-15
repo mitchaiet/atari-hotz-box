@@ -158,6 +158,7 @@ const Piano = () => {
                   isBlack={noteObj.isBlack}
                   isTopKey={false}
                   onPress={() => handleKeyPress(noteObj.note, octave)}
+                  whiteKeyColor="#8cb4d5"
                 />
               );
             })}
