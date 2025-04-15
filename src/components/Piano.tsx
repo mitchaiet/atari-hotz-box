@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import PianoKey from './PianoKey';
 import { Separator } from './ui/separator';
@@ -194,7 +195,7 @@ const Piano = () => {
             alt="Atari Hotz Logo" 
             className="h-12 md:h-16 w-auto object-contain mr-4" 
           />
-          <div className="text-white text-lg md:text-2xl font-bold tracking-wider">
+          <div className="text-white text-2xl md:text-3xl font-['Orbitron'] font-bold tracking-wider uppercase">
             MIDI TRANSLATOR
           </div>
           
@@ -415,7 +416,6 @@ const Piano = () => {
           </div>
         </div>
       </div>
-      <MIDIDebugConsole />
     </div>
   );
 };
