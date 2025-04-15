@@ -1,6 +1,7 @@
 import React from 'react';
 import PianoKey from './PianoKey';
 import { Separator } from './ui/separator';
+
 const Piano = () => {
   // Define the notes for three octaves
   const notes = [{
@@ -115,138 +116,205 @@ const Piano = () => {
       marginBottom: '0'
     }
   }));
-  return <div className="flex justify-center items-center min-h-screen bg-[#333333] p-8">
-    <div className="flex flex-col rounded-lg shadow-2xl p-8 bg-slate-900 w-full 
-      border-[16px] border-[#403E43] 
-      relative 
-      before:absolute before:inset-0 
-      before:border-[8px] 
-      before:border-[#221F26] 
-      before:pointer-events-none 
-      before:z-[-1]">
-      {/* New layout for logo and divider */}
-      <div className="flex items-center justify-between mb-4">
-        <img src="/lovable-uploads/d0be4dda-e062-4ecc-8661-b1c242693570.png" alt="Atari Hotz Logo" className="h-16 w-auto object-contain mr-4" />
-        <div className="text-white text-2xl font-bold tracking-wider">
-          MIDI TRANSLATOR
-        </div>
+  return (
+    <div className="flex justify-center items-center min-h-screen bg-[#333333] p-4 md:p-8">
+      <div className="flex flex-col rounded-lg shadow-2xl p-4 md:p-8 bg-slate-900 w-full max-w-[1400px] mx-auto 
+        border-[16px] border-[#403E43] 
+        relative 
+        before:absolute before:inset-0 
+        before:border-[8px] 
+        before:border-[#221F26] 
+        before:pointer-events-none 
+        before:z-[-1]">
         
-      </div>
-
-      {/* Divider after logo */}
-      <Separator className="mb-8 bg-gray-200" />
-
-      {/* Existing piano layout */}
-      <div className="flex">
-        {/* New left column with 16 buttons */}
-        <div className="flex flex-col mr-8">
-          <div className="flex flex-col gap-0">
-            {sixteenButtonGroup.map((button, index) => <PianoKey key={`far-left-${index}`} note={button.note} octave={0} isBlack={false} isTopKey={true} onPress={() => console.log(`Far left button ${index + 1} pressed`)} style={button.style} />)}
+        {/* Logo and title section */}
+        <div className="flex items-center justify-between mb-4 w-full">
+          <img 
+            src="/lovable-uploads/d0be4dda-e062-4ecc-8661-b1c242693570.png" 
+            alt="Atari Hotz Logo" 
+            className="h-12 md:h-16 w-auto object-contain mr-4" 
+          />
+          <div className="text-white text-lg md:text-2xl font-bold tracking-wider">
+            MIDI TRANSLATOR
           </div>
         </div>
 
-        {/* Separator between new column and existing left column */}
-        <Separator className="mx-4 h-full bg-gray-200" orientation="vertical" />
+        {/* Divider after logo */}
+        <Separator className="mb-4 md:mb-8 bg-gray-200" />
 
-        {/* Original left vertical section */}
-        <div className="flex flex-col mr-8">
-          {verticalButtonGroups.map((group, groupIndex) => <React.Fragment key={`left-group-${groupIndex}`}>
-              <div className="flex flex-col gap-0">
-                {group.map((button, buttonIndex) => <PianoKey key={`left-vertical-${groupIndex}-${buttonIndex}`} note={button.note} octave={0} isBlack={false} isTopKey={true} onPress={() => console.log(`Left vertical button ${groupIndex * 3 + buttonIndex + 1} pressed`)} style={button.style} />)}
-              </div>
-              {groupIndex < verticalButtonGroups.length - 1 && <div className="my-4">
-                  <Separator className="bg-gray-200" orientation="horizontal" />
-                </div>}
-            </React.Fragment>)}
-        </div>
-
-        {/* Piano section */}
-        <div className="flex flex-col">
-          {/* Atari Hotz Logo */}
-          <div className="flex justify-center mb-4">
-            
+        {/* Main piano layout */}
+        <div className="flex flex-col md:flex-row justify-center items-center md:items-start gap-4 md:gap-8 w-full overflow-x-auto">
+          {/* Left 16-button column */}
+          <div className="flex flex-row md:flex-col gap-2 md:gap-0">
+            {sixteenButtonGroup.map((button, index) => (
+              <PianoKey
+                key={`far-left-${index}`}
+                note={button.note}
+                octave={0}
+                isBlack={false}
+                isTopKey={true}
+                onPress={() => console.log(`Far left button ${index + 1} pressed`)}
+                style={button.style}
+              />
+            ))}
           </div>
 
-          {/* Top row of keys */}
-          <div className="flex" style={{
-            width: `${totalWidth}px`
-          }}>
-            {topKeys.map((key, index) => <PianoKey key={`top-${index}`} note={key.note} octave={0} isBlack={false} isTopKey={true} onPress={() => console.log(`Top key ${index + 1} pressed`)} style={key.style} />)}
-          </div>
-          
-          {/* Piano keys - middle row */}
-          <div className="relative flex -mt-[1px]" style={{
-            width: `${totalWidth}px`
-          }}>
-            {threeOctaves.map((noteObj, index) => {
-              const octave = Math.floor(index / 12) + 4;
-              return <PianoKey key={`${noteObj.note}-${octave}-${index}`} note={noteObj.note} octave={octave} isBlack={noteObj.isBlack} isTopKey={false} onPress={() => handleKeyPress(noteObj.note, octave)} whiteKeyColor="#8cb4d5" />;
-            })}
-          </div>
+          {/* Left separator */}
+          <Separator className="hidden md:block h-full bg-gray-200" orientation="vertical" />
 
-          {/* First Divider */}
-          <div className="mt-8" style={{
-            width: `${totalWidth}px`
-          }}>
-            <Separator className="bg-gray-200" />
-          </div>
-
-          {/* Bottom row of buttons */}
-          <div className="flex mt-8" style={{
-            width: `${totalWidth}px`
-          }}>
-            {bottomButtons.map((button, index) => <PianoKey key={`bottom-${index}`} note={button.note} octave={0} isBlack={false} isTopKey={true} onPress={() => console.log(`Bottom button ${index + 1} pressed`)} style={button.style} />)}
+          {/* Left control buttons */}
+          <div className="flex flex-row md:flex-col gap-4">
+            {verticalButtonGroups.map((group, groupIndex) => (
+              <React.Fragment key={`left-group-${groupIndex}`}>
+                <div className="flex flex-row md:flex-col gap-2 md:gap-0">
+                  {group.map((button, buttonIndex) => (
+                    <PianoKey
+                      key={`left-vertical-${groupIndex}-${buttonIndex}`}
+                      note={button.note}
+                      octave={0}
+                      isBlack={false}
+                      isTopKey={true}
+                      onPress={() => console.log(`Left vertical button ${groupIndex * 3 + buttonIndex + 1} pressed`)}
+                      style={button.style}
+                    />
+                  ))}
+                </div>
+                {groupIndex < verticalButtonGroups.length - 1 && (
+                  <Separator className="hidden md:block bg-gray-200" orientation="horizontal" />
+                )}
+              </React.Fragment>
+            ))}
           </div>
 
-          {/* Second Divider */}
-          <div className="mt-8" style={{
-            width: `${totalWidth}px`
-          }}>
-            <Separator className="bg-gray-200" />
+          {/* Piano section */}
+          <div className="flex flex-col items-center w-full max-w-full overflow-x-auto">
+            {/* Top row of keys */}
+            <div className="flex min-w-fit" style={{ width: `${totalWidth}px` }}>
+              {topKeys.map((key, index) => (
+                <PianoKey
+                  key={`top-${index}`}
+                  note={key.note}
+                  octave={0}
+                  isBlack={false}
+                  isTopKey={true}
+                  onPress={() => console.log(`Top key ${index + 1} pressed`)}
+                  style={key.style}
+                />
+              ))}
+            </div>
+
+            {/* Piano keys - middle row */}
+            <div className="relative flex -mt-[1px] min-w-fit" style={{ width: `${totalWidth}px` }}>
+              {threeOctaves.map((noteObj, index) => {
+                const octave = Math.floor(index / 12) + 4;
+                return (
+                  <PianoKey
+                    key={`${noteObj.note}-${octave}-${index}`}
+                    note={noteObj.note}
+                    octave={octave}
+                    isBlack={noteObj.isBlack}
+                    isTopKey={false}
+                    onPress={() => handleKeyPress(noteObj.note, octave)}
+                    whiteKeyColor="#8cb4d5"
+                  />
+                );
+              })}
+            </div>
+
+            {/* First Divider */}
+            <div className="mt-8 min-w-fit" style={{ width: `${totalWidth}px` }}>
+              <Separator className="bg-gray-200" />
+            </div>
+
+            {/* Bottom row of buttons */}
+            <div className="flex mt-8 min-w-fit" style={{ width: `${totalWidth}px` }}>
+              {bottomButtons.map((button, index) => (
+                <PianoKey
+                  key={`bottom-${index}`}
+                  note={button.note}
+                  octave={0}
+                  isBlack={false}
+                  isTopKey={true}
+                  onPress={() => console.log(`Bottom button ${index + 1} pressed`)}
+                  style={button.style}
+                />
+              ))}
+            </div>
+
+            {/* Second Divider */}
+            <div className="mt-8 min-w-fit" style={{ width: `${totalWidth}px` }}>
+              <Separator className="bg-gray-200" />
+            </div>
+
+            {/* Final row of 12 keys */}
+            <div className="flex mt-8 min-w-fit" style={{ width: `${totalWidth}px` }}>
+              {Array.from({ length: 12 }, (_, i) => ({
+                note: `Final${i + 1}`,
+                isBlack: false,
+                isTopKey: true,
+                style: { width: `${twelveKeyWidth}px` }
+              })).map((key, index) => (
+                <PianoKey
+                  key={`final-${index}`}
+                  note={key.note}
+                  octave={0}
+                  isBlack={false}
+                  isTopKey={true}
+                  onPress={() => console.log(`Final row key ${index + 1} pressed`)}
+                  style={key.style}
+                />
+              ))}
+            </div>
           </div>
 
-          {/* Final row of 12 keys */}
-          <div className="flex mt-8" style={{
-            width: `${totalWidth}px`
-          }}>
-            {Array.from({
-              length: 12
-            }, (_, i) => ({
-              note: `Final${i + 1}`,
-              isBlack: false,
-              isTopKey: true,
-              style: {
-                width: `${twelveKeyWidth}px`
-              }
-            })).map((key, index) => <PianoKey key={`final-${index}`} note={key.note} octave={0} isBlack={false} isTopKey={true} onPress={() => console.log(`Final row key ${index + 1} pressed`)} style={key.style} />)}
+          {/* Right separator */}
+          <Separator className="hidden md:block h-full bg-gray-200" orientation="vertical" />
+
+          {/* Right control buttons */}
+          <div className="flex flex-row md:flex-col gap-4">
+            {verticalButtonGroups.map((group, groupIndex) => (
+              <React.Fragment key={`right-group-${groupIndex}`}>
+                <div className="flex flex-row md:flex-col gap-2 md:gap-0">
+                  {group.map((button, buttonIndex) => (
+                    <PianoKey
+                      key={`right-vertical-${groupIndex}-${buttonIndex}`}
+                      note={button.note}
+                      octave={0}
+                      isBlack={false}
+                      isTopKey={true}
+                      onPress={() => console.log(`Right vertical button ${groupIndex * 3 + buttonIndex + 1} pressed`)}
+                      style={button.style}
+                    />
+                  ))}
+                </div>
+                {groupIndex < verticalButtonGroups.length - 1 && (
+                  <Separator className="hidden md:block bg-gray-200" orientation="horizontal" />
+                )}
+              </React.Fragment>
+            ))}
           </div>
-        </div>
 
-        {/* Right vertical divider */}
-        <Separator className="mx-4 h-full bg-gray-200" orientation="vertical" />
+          {/* Right separator */}
+          <Separator className="hidden md:block h-full bg-gray-200" orientation="vertical" />
 
-        {/* Right vertical section */}
-        <div className="flex flex-col ml-8">
-          {verticalButtonGroups.map((group, groupIndex) => <React.Fragment key={`right-group-${groupIndex}`}>
-              <div className="flex flex-col gap-0">
-                {group.map((button, buttonIndex) => <PianoKey key={`right-vertical-${groupIndex}-${buttonIndex}`} note={button.note} octave={0} isBlack={false} isTopKey={true} onPress={() => console.log(`Right vertical button ${groupIndex * 3 + buttonIndex + 1} pressed`)} style={button.style} />)}
-              </div>
-              {groupIndex < verticalButtonGroups.length - 1 && <div className="my-4">
-                  <Separator className="bg-gray-200" orientation="horizontal" />
-                </div>}
-            </React.Fragment>)}
-        </div>
-
-        {/* Rightmost new column with 16 buttons */}
-        <Separator className="mx-4 h-full bg-gray-200" orientation="vertical" />
-        
-        <div className="flex flex-col ml-8">
-          <div className="flex flex-col gap-0">
-            {sixteenButtonGroup.map((button, index) => <PianoKey key={`far-right-${index}`} note={button.note} octave={0} isBlack={false} isTopKey={true} onPress={() => console.log(`Far right button ${index + 1} pressed`)} style={button.style} />)}
+          {/* Right 16-button column */}
+          <div className="flex flex-row md:flex-col gap-2 md:gap-0">
+            {sixteenButtonGroup.map((button, index) => (
+              <PianoKey
+                key={`far-right-${index}`}
+                note={button.note}
+                octave={0}
+                isBlack={false}
+                isTopKey={true}
+                onPress={() => console.log(`Far right button ${index + 1} pressed`)}
+                style={button.style}
+              />
+            ))}
           </div>
         </div>
       </div>
     </div>
-  </div>;
+  );
 };
+
 export default Piano;
