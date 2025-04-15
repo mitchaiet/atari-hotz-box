@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { sendNoteOn, sendNoteOff, mapKeyToMIDINote, sendControlChange } from '@/utils/midiUtils';
 
@@ -29,7 +29,7 @@ const PianoKey: React.FC<PianoKeyProps> = ({
   ccNumber
 }) => {
   const [isPressed, setIsPressed] = useState(false);
-  const [touchId, setTouchId] = useState<number | null>(null);
+  const touchIdRef = useRef<number | null>(null);
 
   const handleKeyPress = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
@@ -60,49 +60,77 @@ const PianoKey: React.FC<PianoKeyProps> = ({
     }
     
     setIsPressed(false);
-    setTouchId(null);
+    touchIdRef.current = null;
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
     e.preventDefault();
+    e.stopPropagation();
+    
     if (isPressed) return;
     
     // Store the touch identifier to track this specific touch
     if (e.touches.length > 0) {
-      setTouchId(e.touches[0].identifier);
+      touchIdRef.current = e.touches[0].identifier;
       handleKeyPress(e);
     }
   };
 
+  // Global touch move handler for the piano
   const handleTouchMove = (e: React.TouchEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     
     // Check if there's at least one touch point
     if (e.touches.length === 0) return;
     
-    // Get bounding rectangle of the key element
-    const rect = e.currentTarget.getBoundingClientRect();
-    
-    // Check if touch is inside this key's boundaries
-    let touchInside = false;
+    // Get the current touch
+    let currentTouch = null;
     for (let i = 0; i < e.touches.length; i++) {
-      const touch = e.touches[i];
-      if (
-        touch.clientX >= rect.left &&
-        touch.clientX <= rect.right &&
-        touch.clientY >= rect.top &&
-        touch.clientY <= rect.bottom
-      ) {
-        touchInside = true;
+      if (touchIdRef.current === e.touches[i].identifier) {
+        currentTouch = e.touches[i];
         break;
       }
     }
     
-    // Activate if touch enters key and not already pressed
+    // If we couldn't find our tracked touch, check if we're in the touch
+    if (!currentTouch) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      
+      // Look for any touch that's over this element
+      for (let i = 0; i < e.touches.length; i++) {
+        const touch = e.touches[i];
+        if (
+          touch.clientX >= rect.left &&
+          touch.clientX <= rect.right &&
+          touch.clientY >= rect.top &&
+          touch.clientY <= rect.bottom
+        ) {
+          currentTouch = touch;
+          touchIdRef.current = touch.identifier;
+          break;
+        }
+      }
+    }
+    
+    // Get bounding rectangle of the key element
+    const rect = e.currentTarget.getBoundingClientRect();
+    
+    // Check if our touch is inside this key's boundaries
+    let touchInside = false;
+    if (currentTouch) {
+      touchInside = 
+        currentTouch.clientX >= rect.left &&
+        currentTouch.clientX <= rect.right &&
+        currentTouch.clientY >= rect.top &&
+        currentTouch.clientY <= rect.bottom;
+    }
+    
+    // Handle touch entering key (press)
     if (touchInside && !isPressed) {
       handleKeyPress(e);
-    } 
-    // Deactivate if touch leaves key and is currently pressed
+    }
+    // Handle touch exiting key (release)
     else if (!touchInside && isPressed) {
       handleKeyRelease(e);
     }
@@ -110,11 +138,12 @@ const PianoKey: React.FC<PianoKeyProps> = ({
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     
     // Check if our tracked touch has ended
     let touchExists = false;
     for (let i = 0; i < e.touches.length; i++) {
-      if (touchId !== null && e.touches[i].identifier === touchId) {
+      if (touchIdRef.current !== null && e.touches[i].identifier === touchIdRef.current) {
         touchExists = true;
         break;
       }
@@ -126,6 +155,7 @@ const PianoKey: React.FC<PianoKeyProps> = ({
     }
   };
 
+  // Mouse events for desktop
   const handleMouseEnter = (e: React.MouseEvent) => {
     // Trigger key when mouse enters with button pressed (dragging)
     if (e.buttons === 1) {
