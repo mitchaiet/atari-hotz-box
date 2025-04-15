@@ -1,6 +1,8 @@
 
 # HotzBox MIDI Interface
 
+![Hotz MIDI Translator Interface](/public/lovable-uploads/2cc06d29-c86f-49a5-8913-807f574d89f2.png)
+
 A web-based MIDI interface for translating keyboard inputs into MIDI signals, inspired by the Hotz MIDI Translator.
 
 ## Project Overview
