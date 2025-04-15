@@ -1,11 +1,8 @@
-
 # HotzBox MIDI Interface
 
 ![Hotz MIDI Translator Interface](/public/lovable-uploads/Hotz_Translator_MIDI_Interface.png)
 
 A web-based MIDI interface for translating touch gesture inputs into MIDI signals, inspired by the Hotz MIDI Translator.
-
-[![Hotz MIDI Translator Demo Video](https://img.youtube.com/vi/pzj4y_vtTkc/0.jpg)](https://www.youtube.com/watch?v=pzj4y_vtTkc)
 
 ## Project Overview
 
@@ -76,7 +73,12 @@ npm run dev
 
 Contributions are welcome! Feel free to submit issues and pull requests.
 
+## Information Links
+
+- [Hotz MIDI Translator Demo Video](https://www.youtube.com/watch?v=pzj4y_vtTkc) - Watch a demonstration of the original Hotz MIDI Translator in action
+
+[![Hotz MIDI Translator Demo Video](https://img.youtube.com/vi/pzj4y_vtTkc/0.jpg)](https://www.youtube.com/watch?v=pzj4y_vtTkc)
+
 ## License
 
 © 2025 Mitch Chaiet. All rights reserved.
-
