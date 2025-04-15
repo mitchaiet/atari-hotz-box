@@ -1,4 +1,3 @@
-
 import React from 'react';
 import PianoKey from './PianoKey';
 import { Separator } from './ui/separator';
@@ -60,7 +59,7 @@ const Piano = () => {
       isBlack: false,
       isTopKey: true,
       style: { 
-        width: '52px', 
+        width: '104px', // Changed from 52px to 104px
         height: '52px',
         marginBottom: groupIndex < 3 ? '0' : '0' // Remove margin between buttons in a group
       }
