@@ -1,4 +1,3 @@
-
 // MIDI utility functions for handling MIDI connections and messages
 
 // Track the MIDI output
@@ -31,14 +30,25 @@ export const initMIDI = async (): Promise<boolean> => {
     // Setup listeners for when MIDI devices connect/disconnect
     midiAccess.onstatechange = (event) => {
       const port = event.port;
+      console.log(`MIDI port ${port.name} ${port.state} (${port.type})`);
+      
       if (port.type === 'output') {
-        console.log(`MIDI output ${port.name} ${port.state}`);
         // Refresh our list of outputs
         midiOutputs = Array.from(midiAccess.outputs.values());
         
-        // If our current output was disconnected, try to use another one
-        if (midiOutput && port.id === midiOutput.id && port.state === 'disconnected') {
-          midiOutput = midiOutputs.length > 0 ? midiOutputs[0] : null;
+        if (port.state === 'connected') {
+          console.log(`New MIDI output available: ${port.name}`);
+        } else if (port.state === 'disconnected') {
+          console.log(`MIDI output disconnected: ${port.name}`);
+          // If our current output was disconnected, try to use another one
+          if (midiOutput && port.id === midiOutput.id) {
+            midiOutput = midiOutputs.length > 0 ? midiOutputs[0] : null;
+            if (midiOutput) {
+              console.log(`Switched to MIDI output: ${midiOutput.name}`);
+            } else {
+              console.log('No MIDI outputs available');
+            }
+          }
         }
       }
     };
@@ -88,6 +98,17 @@ export const setMIDIOutput = (outputId: string): boolean => {
     return true;
   }
   return false;
+};
+
+// Get information about the current MIDI output
+export const getMIDIOutputInfo = () => {
+  return midiOutputs.map(output => ({
+    id: output.id,
+    name: output.name,
+    manufacturer: output.manufacturer,
+    state: output.state,
+    isSelected: midiOutput?.id === output.id
+  }));
 };
 
 // Check if WebMIDI is supported

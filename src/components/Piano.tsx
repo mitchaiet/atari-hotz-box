@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import PianoKey from './PianoKey';
 import { Separator } from './ui/separator';
@@ -56,6 +55,12 @@ const Piano = () => {
     document.addEventListener('fullscreenchange', handleFullscreenChange);
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
+
+  const getMidiStatus = () => {
+    if (!isMIDISupported()) return "MIDI Not Supported";
+    if (!midiInitialized) return "MIDI Available";
+    return midiOutputs.length > 0 ? "MIDI Ready" : "No MIDI Outputs";
+  };
 
   const notes = [{
     note: 'C',
@@ -180,20 +185,31 @@ const Piano = () => {
           </div>
           
           <div className="flex items-center gap-2">
-            <div className={`h-3 w-3 rounded-full ${midiInitialized ? 'bg-green-500' : 'bg-red-500'}`} />
-            <span className="text-white text-sm">
-              {midiInitialized ? 'MIDI Ready' : isMIDISupported() ? 'MIDI Available' : 'MIDI Not Supported'}
+            <div className={`h-2 w-2 rounded-full ${
+              !isMIDISupported() ? 'bg-red-500' :
+              !midiInitialized ? 'bg-yellow-500' :
+              midiOutputs.length > 0 ? 'bg-green-500' : 'bg-red-500'
+            }`} />
+            <span className="text-white text-xs">
+              {getMidiStatus()}
             </span>
             
             {midiInitialized && midiOutputs.length > 0 && (
               <Select value={selectedOutput} onValueChange={handleOutputChange}>
-                <SelectTrigger className="w-[180px] bg-slate-800 text-white">
+                <SelectTrigger className="w-[180px] bg-slate-800 text-white border-slate-700 text-xs">
                   <SelectValue placeholder="Select MIDI Output" />
                 </SelectTrigger>
-                <SelectContent className="bg-slate-800 text-white">
+                <SelectContent className="bg-slate-800 text-white border-slate-700">
                   {midiOutputs.map((output) => (
-                    <SelectItem key={output.id} value={output.id}>
+                    <SelectItem 
+                      key={output.id} 
+                      value={output.id}
+                      className="text-xs"
+                    >
                       {output.name}
+                      <span className="ml-2 text-slate-400">
+                        ({output.manufacturer || 'Unknown'})
+                      </span>
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -201,13 +217,16 @@ const Piano = () => {
             )}
             
             <Button
-              variant="outline"
+              variant="ghost"
               size="icon"
               onClick={toggleFullscreen}
-              className="text-white border-white ml-2"
+              className="text-slate-400 hover:text-white hover:bg-slate-800"
               aria-label="Toggle fullscreen"
             >
-              {isFullscreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
+              {isFullscreen ? 
+                <Minimize className="h-3 w-3" /> : 
+                <Maximize className="h-3 w-3" />
+              }
             </Button>
           </div>
         </div>
