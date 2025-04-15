@@ -70,19 +70,19 @@ const Piano = () => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 p-8">
       <div className="flex bg-white rounded-lg shadow-2xl p-8">
-        {/* Vertical section */}
+        {/* Left vertical section */}
         <div className="flex flex-col mr-8">
           {verticalButtonGroups.map((group, groupIndex) => (
-            <React.Fragment key={`group-${groupIndex}`}>
+            <React.Fragment key={`left-group-${groupIndex}`}>
               <div className="flex flex-col gap-0">
                 {group.map((button, buttonIndex) => (
                   <PianoKey
-                    key={`vertical-${groupIndex}-${buttonIndex}`}
+                    key={`left-vertical-${groupIndex}-${buttonIndex}`}
                     note={button.note}
                     octave={0}
                     isBlack={false}
                     isTopKey={true}
-                    onPress={() => console.log(`Vertical button ${groupIndex * 3 + buttonIndex + 1} pressed`)}
+                    onPress={() => console.log(`Left vertical button ${groupIndex * 3 + buttonIndex + 1} pressed`)}
                     style={button.style}
                   />
                 ))}
@@ -96,7 +96,7 @@ const Piano = () => {
           ))}
         </div>
 
-        {/* Vertical divider */}
+        {/* Left vertical divider */}
         <Separator className="mx-4 h-full bg-gray-200" orientation="vertical" />
 
         {/* Piano section */}
@@ -177,6 +177,35 @@ const Piano = () => {
               />
             ))}
           </div>
+        </div>
+
+        {/* Right vertical divider */}
+        <Separator className="mx-4 h-full bg-gray-200" orientation="vertical" />
+
+        {/* Right vertical section */}
+        <div className="flex flex-col ml-8">
+          {verticalButtonGroups.map((group, groupIndex) => (
+            <React.Fragment key={`right-group-${groupIndex}`}>
+              <div className="flex flex-col gap-0">
+                {group.map((button, buttonIndex) => (
+                  <PianoKey
+                    key={`right-vertical-${groupIndex}-${buttonIndex}`}
+                    note={button.note}
+                    octave={0}
+                    isBlack={false}
+                    isTopKey={true}
+                    onPress={() => console.log(`Right vertical button ${groupIndex * 3 + buttonIndex + 1} pressed`)}
+                    style={button.style}
+                  />
+                ))}
+              </div>
+              {groupIndex < verticalButtonGroups.length - 1 && (
+                <div className="my-4">
+                  <Separator className="bg-gray-200" orientation="horizontal" />
+                </div>
+              )}
+            </React.Fragment>
+          ))}
         </div>
       </div>
     </div>
