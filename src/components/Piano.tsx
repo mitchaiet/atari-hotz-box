@@ -75,7 +75,7 @@ const Piano = () => {
     style: {
       width: '104px',
       height: '45px',
-      backgroundColor: '#338899',
+      backgroundColor: '#8cb4d5',
       marginBottom: '0'
     }
   }));
