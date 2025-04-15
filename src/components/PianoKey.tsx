@@ -1,4 +1,5 @@
-import React, { useState, useRef } from 'react';
+
+import React, { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { sendNoteOn, sendNoteOff, mapKeyToMIDINote, sendControlChange } from '@/utils/midiUtils';
 
@@ -21,6 +22,14 @@ interface PianoKeyProps {
   ccNumber?: number;
 }
 
+// Create a global map to track all piano key elements and their states
+const keyRegistry = new Map<string, {
+  ref: HTMLDivElement | null;
+  isPressed: boolean;
+  setIsPressed: (value: boolean) => void;
+  handlePress: (pressed: boolean, e: React.MouseEvent | React.TouchEvent) => void;
+}>();
+
 const PianoKey: React.FC<PianoKeyProps> = ({ 
   note, 
   octave, 
@@ -37,6 +46,29 @@ const PianoKey: React.FC<PianoKeyProps> = ({
   const touchIdRef = useRef<number | null>(null);
   const keyRef = useRef<HTMLDivElement>(null);
   const lastTouchTimeRef = useRef<number>(0);
+  const keyId = `${note}-${octave}`;
+
+  // Register this key in the global registry
+  useEffect(() => {
+    if (keyRef.current) {
+      keyRegistry.set(keyId, {
+        ref: keyRef.current,
+        isPressed,
+        setIsPressed,
+        handlePress: (pressed: boolean, e: React.MouseEvent | React.TouchEvent) => {
+          if (pressed) {
+            handleInteractionStart(e);
+          } else {
+            handleInteractionEnd(e);
+          }
+        }
+      });
+    }
+    
+    return () => {
+      keyRegistry.delete(keyId);
+    };
+  }, [keyId, isPressed]);
 
   const handleInteractionStart = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
@@ -88,6 +120,63 @@ const PianoKey: React.FC<PianoKeyProps> = ({
     touchIdRef.current = null;
   };
 
+  // Improved touch handling using a global approach
+  const handleGlobalTouchMove = (e: TouchEvent) => {
+    // Throttle the touch events
+    const now = Date.now();
+    if (now - lastTouchTimeRef.current < 16) { // ~60fps
+      return;
+    }
+    lastTouchTimeRef.current = now;
+
+    // Process each touch point
+    Array.from(e.touches).forEach(touch => {
+      const touchX = touch.clientX;
+      const touchY = touch.clientY;
+      
+      // Check all keys to see which one(s) the touch is over
+      keyRegistry.forEach((keyData, id) => {
+        if (!keyData.ref) return;
+        
+        const rect = keyData.ref.getBoundingClientRect();
+        const isPointInside = 
+          touchX >= rect.left && 
+          touchX <= rect.right && 
+          touchY >= rect.top && 
+          touchY <= rect.bottom;
+        
+        // Update only if the pressed state needs to change
+        if (isPointInside && !keyData.isPressed) {
+          keyData.handlePress(true, e as unknown as React.TouchEvent);
+          emitDebugEvent('touch', 
+            `Touch entered ${id} at (${Math.round(touchX)},${Math.round(touchY)}) - bounds: (${Math.round(rect.left)},${Math.round(rect.top)})-(${Math.round(rect.right)},${Math.round(rect.bottom)})`
+          );
+        } else if (!isPointInside && keyData.isPressed) {
+          keyData.handlePress(false, e as unknown as React.TouchEvent);
+          emitDebugEvent('touch', 
+            `Touch left ${id} at (${Math.round(touchX)},${Math.round(touchY)}) - bounds: (${Math.round(rect.left)},${Math.round(rect.top)})-(${Math.round(rect.right)},${Math.round(rect.bottom)})`
+          );
+        }
+      });
+    });
+  };
+
+  // Set up global touch move handler
+  useEffect(() => {
+    document.addEventListener('touchmove', handleGlobalTouchMove, { passive: false });
+    document.addEventListener('touchend', (e) => {
+      // When all touches end, make sure to reset the pressed state
+      if (e.touches.length === 0 && isPressed) {
+        handleInteractionEnd(e as unknown as React.TouchEvent);
+      }
+    });
+    
+    return () => {
+      document.removeEventListener('touchmove', handleGlobalTouchMove);
+    };
+  }, [isPressed]);
+
+  // Handle individual element interactions
   const handleInteractionMove = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -165,7 +254,6 @@ const PianoKey: React.FC<PianoKeyProps> = ({
       onMouseEnter={(e) => e.buttons === 1 && handleInteractionStart(e)}
       onMouseLeave={handleInteractionEnd}
       onTouchStart={handleInteractionStart}
-      onTouchMove={handleInteractionMove}
       onTouchEnd={handleInteractionEnd}
       onTouchCancel={handleInteractionEnd}
       role="button"
