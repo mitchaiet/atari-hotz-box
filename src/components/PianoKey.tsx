@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { sendNoteOn, sendNoteOff, mapKeyToMIDINote, sendControlChange } from '@/utils/midiUtils';
@@ -97,9 +98,12 @@ const PianoKey: React.FC<PianoKeyProps> = ({
     let isPointerOver = false;
 
     if ('touches' in e) {
-      // Touch event
+      // For touch events, we need to check all active touches
       const touchList = Array.from(e.touches);
+      
+      // Check if any touches are over this key
       isPointerOver = touchList.some(touch => {
+        // Get the exact position for this touch point
         return (
           touch.clientX >= rect.left &&
           touch.clientX <= rect.right &&
@@ -108,19 +112,29 @@ const PianoKey: React.FC<PianoKeyProps> = ({
         );
       });
       
-      emitDebugEvent('touch', `${e.type} on ${note}${octave} (${isPointerOver ? 'over' : 'out'})`);
+      const touchCoordinates = touchList.map(touch => 
+        `(${Math.round(touch.clientX)},${Math.round(touch.clientY)})`
+      ).join(', ');
+      
+      emitDebugEvent('touch', 
+        `${e.type} on ${note}${octave} - coords: ${touchCoordinates} - ${isPointerOver ? 'over' : 'out'} - bounds: (${Math.round(rect.left)},${Math.round(rect.top)})-(${Math.round(rect.right)},${Math.round(rect.bottom)})`
+      );
     } else {
-      // Mouse event
+      // For mouse events
+      const mouseEvent = e as React.MouseEvent;
       isPointerOver = (
-        (e as React.MouseEvent).clientX >= rect.left &&
-        (e as React.MouseEvent).clientX <= rect.right &&
-        (e as React.MouseEvent).clientY >= rect.top &&
-        (e as React.MouseEvent).clientY <= rect.bottom
+        mouseEvent.clientX >= rect.left &&
+        mouseEvent.clientX <= rect.right &&
+        mouseEvent.clientY >= rect.top &&
+        mouseEvent.clientY <= rect.bottom
       );
       
-      emitDebugEvent('mouse', `${e.type} on ${note}${octave} (${isPointerOver ? 'over' : 'out'})`);
+      emitDebugEvent('mouse', 
+        `${e.type} on ${note}${octave} - coords: (${Math.round(mouseEvent.clientX)},${Math.round(mouseEvent.clientY)}) - ${isPointerOver ? 'over' : 'out'}`
+      );
     }
 
+    // Toggle the key state based on whether the pointer is over it
     if (isPointerOver && !isPressed) {
       handleInteractionStart(e);
     } else if (!isPointerOver && isPressed) {

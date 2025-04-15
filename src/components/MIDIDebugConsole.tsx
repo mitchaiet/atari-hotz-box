@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { ScrollArea } from './ui/scroll-area';
 
@@ -12,6 +13,7 @@ const MIDIDebugConsole = () => {
   const [messages, setMessages] = useState<DebugMessage[]>([]);
   const messageIdCounter = useRef(0);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
     const handleEvent = (event: CustomEvent<{ type: string; message: string }>) => {
@@ -32,15 +34,23 @@ const MIDIDebugConsole = () => {
   }, []);
 
   return (
-    <div className="fixed bottom-4 right-4 w-96 h-64 bg-slate-900/90 border border-slate-700 rounded-lg shadow-xl">
+    <div className={`fixed bottom-4 right-4 w-96 h-64 bg-slate-900/90 border border-slate-700 rounded-lg shadow-xl transition-opacity ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
       <div className="flex items-center justify-between p-2 border-b border-slate-700">
         <h3 className="text-sm font-medium text-slate-200">Debug Console</h3>
-        <button
-          onClick={() => setMessages([])}
-          className="text-xs text-slate-400 hover:text-slate-200"
-        >
-          Clear
-        </button>
+        <div className="flex space-x-2">
+          <button
+            onClick={() => setIsVisible(!isVisible)}
+            className="text-xs text-slate-400 hover:text-slate-200"
+          >
+            {isVisible ? 'Hide' : 'Show'}
+          </button>
+          <button
+            onClick={() => setMessages([])}
+            className="text-xs text-slate-400 hover:text-slate-200"
+          >
+            Clear
+          </button>
+        </div>
       </div>
       <ScrollArea className="h-[calc(100%-2.5rem)]">
         <div className="p-2 space-y-1 font-mono text-xs">
@@ -54,7 +64,7 @@ const MIDIDebugConsole = () => {
               }>
                 {msg.type}
               </span>
-              <span className="text-slate-300">{msg.message}</span>
+              <span className="text-slate-300 whitespace-pre-wrap break-all">{msg.message}</span>
             </div>
           ))}
         </div>
