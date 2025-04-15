@@ -1,4 +1,3 @@
-
 import React from 'react';
 import PianoKey from './PianoKey';
 import { Separator } from './ui/separator';
@@ -143,11 +142,13 @@ const Piano = () => {
 
         {/* Piano section */}
         <div className="flex flex-col">
-          {/* Atari Hotz Logo - Using placeholder text until image is fixed */}
+          {/* Atari Hotz Logo */}
           <div className="flex justify-center mb-4">
-            <div className="h-16 w-auto bg-slate-700 flex items-center justify-center px-4 rounded">
-              <span className="text-white text-xl font-bold">Atari Hotz</span>
-            </div>
+            <img 
+              src="/lovable-uploads/d0be4dda-e062-4ecc-8661-b1c242693570.png"
+              alt="Atari Hotz Logo" 
+              className="h-16 w-auto object-contain"
+            />
           </div>
 
           {/* Top row of keys */}
