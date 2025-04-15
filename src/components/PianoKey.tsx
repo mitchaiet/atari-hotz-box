@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { sendNoteOn, sendNoteOff, mapKeyToMIDINote, sendControlChange } from '@/utils/midiUtils';
@@ -134,6 +133,9 @@ const PianoKey: React.FC<PianoKeyProps> = ({
       const touchX = touch.clientX;
       const touchY = touch.clientY;
       
+      // Create a list to track which keys we've found the touch over
+      const keysUnderTouch = new Set<string>();
+      
       // Check all keys to see which one(s) the touch is over
       keyRegistry.forEach((keyData, id) => {
         if (!keyData.ref) return;
@@ -145,20 +147,39 @@ const PianoKey: React.FC<PianoKeyProps> = ({
           touchY >= rect.top && 
           touchY <= rect.bottom;
         
-        // Update only if the pressed state needs to change
-        if (isPointInside && !keyData.isPressed) {
-          keyData.handlePress(true, e as unknown as React.TouchEvent);
-          emitDebugEvent('touch', 
-            `Touch entered ${id} at (${Math.round(touchX)},${Math.round(touchY)}) - bounds: (${Math.round(rect.left)},${Math.round(rect.top)})-(${Math.round(rect.right)},${Math.round(rect.bottom)})`
-          );
-        } else if (!isPointInside && keyData.isPressed) {
+        if (isPointInside) {
+          keysUnderTouch.add(id);
+          
+          // If we're not already pressed and we're inside, trigger press
+          if (!keyData.isPressed) {
+            keyData.handlePress(true, e as unknown as React.TouchEvent);
+            emitDebugEvent('touch', 
+              `Touch entered ${id} at (${Math.round(touchX)},${Math.round(touchY)}) - bounds: (${Math.round(rect.left)},${Math.round(rect.top)})-(${Math.round(rect.right)},${Math.round(rect.bottom)})`
+            );
+          }
+        }
+      });
+      
+      // Now release any keys that are pressed but not under the touch
+      keyRegistry.forEach((keyData, id) => {
+        if (keyData.isPressed && !keysUnderTouch.has(id)) {
           keyData.handlePress(false, e as unknown as React.TouchEvent);
           emitDebugEvent('touch', 
-            `Touch left ${id} at (${Math.round(touchX)},${Math.round(touchY)}) - bounds: (${Math.round(rect.left)},${Math.round(rect.top)})-(${Math.round(rect.right)},${Math.round(rect.bottom)})`
+            `Touch left ${id}`
           );
         }
       });
     });
+
+    // If no touches remain, release all pressed keys
+    if (e.touches.length === 0) {
+      keyRegistry.forEach((keyData, id) => {
+        if (keyData.isPressed) {
+          keyData.handlePress(false, e as unknown as React.TouchEvent);
+          emitDebugEvent('touch', `Touch ended ${id}`);
+        }
+      });
+    }
   };
 
   // Set up global touch move handler
