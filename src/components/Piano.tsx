@@ -31,9 +31,10 @@ const Piano = () => {
   // Get only white keys for the bottom row - exactly 21 keys
   const whiteKeys = threeOctaves.filter(note => !note.isBlack).slice(0, 21);
   
-  // Calculate the correct width for each button in the bottom row
-  // Piano white keys width = 21 × 52px = 1092px
-  const bottomButtons = whiteKeys.map((note, index) => ({
+  // Calculate the exact width needed for each button in the bottom row
+  // Total width needs to match the piano keys: 1092px (21 white keys × 52px)
+  // Each bottom button should be 1092/21 = 52px wide
+  const bottomButtons = Array.from({ length: 21 }, (_, index) => ({
     note: `Button${index + 1}`,
     isBlack: false,
     isTopKey: true
@@ -83,7 +84,7 @@ const Piano = () => {
         </div>
 
         {/* Bottom row of buttons */}
-        <div className="flex gap-0 mt-8 w-full">
+        <div className="flex mt-8" style={{ width: "1092px" }}>
           {bottomButtons.map((button, index) => (
             <PianoKey
               key={`bottom-${index}`}
@@ -92,6 +93,7 @@ const Piano = () => {
               isBlack={false}
               isTopKey={true}
               onPress={() => console.log(`Bottom button ${index + 1} pressed`)}
+              style={{ width: "52px" }}
             />
           ))}
         </div>
