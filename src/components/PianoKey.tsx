@@ -20,7 +20,7 @@ const PianoKey: React.FC<PianoKeyProps> = ({
   isTopKey, 
   onPress, 
   style, 
-  whiteKeyColor = '#FFFFFF',
+  whiteKeyColor = '#F5F5F5', // Changed to a soft off-white
   className
 }) => {
   const handleKeyPress = (e: React.MouseEvent) => {
@@ -28,7 +28,7 @@ const PianoKey: React.FC<PianoKeyProps> = ({
     onPress();
   };
 
-  const baseWhiteStyle = "hover:bg-[#F1F1F1] active:bg-[#E0E0E0]";
+  const baseWhiteStyle = "hover:bg-[#E0E0E0] active:bg-[#D0D0D0]";
   const baseBlackStyle = "hover:bg-[#405a96] active:bg-[#344b7d]";
 
   return (
