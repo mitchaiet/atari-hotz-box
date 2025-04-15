@@ -1,6 +1,8 @@
 import React from 'react';
 import PianoKey from './PianoKey';
 import { Separator } from './ui/separator';
+import AtariHotzLogo from '/lovable-uploads/19d3fdb9-1a9f-4cc8-9630-dd2b902e9bad.png';
+
 const Piano = () => {
   // Define the notes for three octaves
   const notes = [{
@@ -141,6 +143,15 @@ const Piano = () => {
 
         {/* Piano section */}
         <div className="flex flex-col">
+          {/* Atari Hotz Logo */}
+          <div className="flex justify-center mb-4">
+            <img 
+              src={AtariHotzLogo} 
+              alt="Atari Hotz Logo" 
+              className="h-16 w-auto object-contain"
+            />
+          </div>
+
           {/* Top row of keys */}
           <div className="flex" style={{
           width: `${totalWidth}px`
@@ -222,4 +233,5 @@ const Piano = () => {
       </div>
     </div>;
 };
+
 export default Piano;
