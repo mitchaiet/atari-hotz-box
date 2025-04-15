@@ -78,9 +78,11 @@ const Piano = () => {
     isBlack: false,
     isTopKey: true,
     style: {
-      width: `${bottomKeyWidth}px`
+      width: `${bottomKeyWidth}px`,
+      backgroundColor: '#8cb4d5'
     }
   }));
+
   const handleKeyPress = (note: string, octave: number) => {
     console.log(`Key pressed: ${note} (Octave ${octave})`);
   };
@@ -116,6 +118,7 @@ const Piano = () => {
       marginBottom: '0'
     }
   }));
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-[#333333] p-4 md:p-8">
       <div className="flex flex-col rounded-lg shadow-2xl p-4 md:p-8 bg-slate-900 w-full max-w-[1400px] mx-auto 
@@ -241,7 +244,7 @@ const Piano = () => {
                   isTopKey={true}
                   onPress={() => console.log(`Bottom button ${index + 1} pressed`)}
                   className="flex-1"
-                  style={{width: undefined}}
+                  style={button.style}
                 />
               ))}
             </div>
