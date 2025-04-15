@@ -14,6 +14,13 @@ const Piano = () => {
     { note: 'B', isBlack: false },
   ];
 
+  // Create array of 15 top keys
+  const topKeys = Array.from({ length: 15 }, (_, i) => ({
+    note: `Key${i + 1}`,
+    isBlack: false,
+    isTopKey: true
+  }));
+
   // Repeat the notes for three octaves
   const threeOctaves = [...notes, ...notes, ...notes];
 
@@ -23,16 +30,31 @@ const Piano = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 p-8">
-      <div className="relative flex bg-white rounded-lg shadow-2xl p-8">
+      <div className="relative flex flex-col bg-white rounded-lg shadow-2xl p-8">
+        {/* Top row of keys */}
+        <div className="flex mb-4">
+          {topKeys.map((key, index) => (
+            <PianoKey
+              key={`top-${index}`}
+              note={key.note}
+              octave={0}
+              isBlack={false}
+              isTopKey={true}
+              onPress={() => console.log(`Top key ${index + 1} pressed`)}
+            />
+          ))}
+        </div>
+        {/* Piano keys */}
         <div className="relative flex">
           {threeOctaves.map((noteObj, index) => {
-            const octave = Math.floor(index / 12) + 4; // Starting from octave 4
+            const octave = Math.floor(index / 12) + 4;
             return (
               <PianoKey
                 key={`${noteObj.note}-${octave}-${index}`}
                 note={noteObj.note}
                 octave={octave}
                 isBlack={noteObj.isBlack}
+                isTopKey={false}
                 onPress={() => handleKeyPress(noteObj.note, octave)}
               />
             );
