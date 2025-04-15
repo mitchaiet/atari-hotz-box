@@ -29,6 +29,7 @@ const PianoKey: React.FC<PianoKeyProps> = ({
   ccNumber
 }) => {
   const [isPressed, setIsPressed] = useState(false);
+  const [touchId, setTouchId] = useState<number | null>(null);
 
   const handleKeyPress = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
@@ -59,15 +60,81 @@ const PianoKey: React.FC<PianoKeyProps> = ({
     }
     
     setIsPressed(false);
+    setTouchId(null);
   };
 
-  const handleTouchEnter = (e: React.TouchEvent) => {
-    if (e.touches.length > 0 && !isPressed) {
+  const handleTouchStart = (e: React.TouchEvent) => {
+    e.preventDefault();
+    if (isPressed) return;
+    
+    // Store the touch identifier to track this specific touch
+    if (e.touches.length > 0) {
+      setTouchId(e.touches[0].identifier);
       handleKeyPress(e);
     }
   };
 
-  const handleTouchLeave = (e: React.TouchEvent) => {
+  const handleTouchMove = (e: React.TouchEvent) => {
+    e.preventDefault();
+    
+    // Check if there's at least one touch point
+    if (e.touches.length === 0) return;
+    
+    // Get bounding rectangle of the key element
+    const rect = e.currentTarget.getBoundingClientRect();
+    
+    // Check if touch is inside this key's boundaries
+    let touchInside = false;
+    for (let i = 0; i < e.touches.length; i++) {
+      const touch = e.touches[i];
+      if (
+        touch.clientX >= rect.left &&
+        touch.clientX <= rect.right &&
+        touch.clientY >= rect.top &&
+        touch.clientY <= rect.bottom
+      ) {
+        touchInside = true;
+        break;
+      }
+    }
+    
+    // Activate if touch enters key and not already pressed
+    if (touchInside && !isPressed) {
+      handleKeyPress(e);
+    } 
+    // Deactivate if touch leaves key and is currently pressed
+    else if (!touchInside && isPressed) {
+      handleKeyRelease(e);
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    e.preventDefault();
+    
+    // Check if our tracked touch has ended
+    let touchExists = false;
+    for (let i = 0; i < e.touches.length; i++) {
+      if (touchId !== null && e.touches[i].identifier === touchId) {
+        touchExists = true;
+        break;
+      }
+    }
+    
+    // If our tracked touch no longer exists, release the key
+    if (!touchExists && isPressed) {
+      handleKeyRelease(e);
+    }
+  };
+
+  const handleMouseEnter = (e: React.MouseEvent) => {
+    // Trigger key when mouse enters with button pressed (dragging)
+    if (e.buttons === 1) {
+      handleKeyPress(e);
+    }
+  };
+
+  const handleMouseLeave = (e: React.MouseEvent) => {
+    // Release key when mouse leaves if it was pressed
     if (isPressed) {
       handleKeyRelease(e);
     }
@@ -91,12 +158,12 @@ const PianoKey: React.FC<PianoKeyProps> = ({
       style={style}
       onMouseDown={handleKeyPress}
       onMouseUp={handleKeyRelease}
-      onMouseLeave={isPressed ? handleKeyRelease : undefined}
-      onMouseEnter={(e) => e.buttons === 1 && handleKeyPress(e as any)}
-      onTouchStart={handleKeyPress}
-      onTouchEnd={handleKeyRelease}
-      onTouchCancel={handleKeyRelease}
-      onTouchMove={handleTouchEnter}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchEnd}
       role="button"
       aria-label={`${note}${octave}`}
       aria-pressed={isPressed}
