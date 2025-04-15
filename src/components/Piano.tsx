@@ -1,7 +1,7 @@
+
 import React from 'react';
 import PianoKey from './PianoKey';
 import { Separator } from './ui/separator';
-import { Button } from './ui/button';
 
 const Piano = () => {
   // Define the notes for three octaves
@@ -32,8 +32,9 @@ const Piano = () => {
   // Total width of 36 keys = (21 white keys × 52px) = 1092px
   // For 21 buttons, each should be approximately 52px
   const bottomButtons = Array.from({ length: 21 }, (_, i) => ({
-    id: `button-${i + 1}`,
-    label: `${i + 1}`
+    note: `Button${i + 1}`,
+    isBlack: false,
+    isTopKey: true
   }));
 
   const handleKeyPress = (note: string, octave: number) => {
@@ -56,6 +57,7 @@ const Piano = () => {
             />
           ))}
         </div>
+        
         {/* Piano keys */}
         <div className="relative flex -mt-[1px]">
           {threeOctaves.map((noteObj, index) => {
@@ -79,15 +81,16 @@ const Piano = () => {
         </div>
 
         {/* Bottom row of buttons */}
-        <div className="flex gap-1 mt-8">
-          {bottomButtons.map((button) => (
-            <Button 
-              key={button.id}
-              className="w-[52px] h-12 bg-[#8cb4d5] hover:bg-[#7aa2c3] active:bg-[#6890b1] border-none"
-              onClick={() => console.log(`Bottom button ${button.label} clicked`)}
-            >
-              {button.label}
-            </Button>
+        <div className="flex gap-0 mt-8">
+          {bottomButtons.map((button, index) => (
+            <PianoKey
+              key={`bottom-${index}`}
+              note={button.note}
+              octave={0}
+              isBlack={false}
+              isTopKey={true}
+              onPress={() => console.log(`Bottom button ${index + 1} pressed`)}
+            />
           ))}
         </div>
       </div>
