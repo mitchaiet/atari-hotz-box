@@ -1,4 +1,3 @@
-
 @import '@fontsource/orbitron/400.css';
 @import '@fontsource/orbitron/700.css';
 
@@ -110,15 +109,16 @@
     position: relative;
     min-height: 100vh;
     overflow-x: hidden;
+    z-index: 1; /* Ensure body content is above the background effects */
   }
 
   body::before {
     content: '';
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    height: 50vh;
+    bottom: 0;
     background-image: 
       radial-gradient(2px 2px at 20px 30px, #ffffff 100%, transparent),
       radial-gradient(2px 2px at 40px 70px, #ffffff 100%, transparent),
@@ -131,27 +131,10 @@
     opacity: 0.5;
     animation: twinkle 5s infinite;
     pointer-events: none;
+    z-index: -2; /* Ensure starry background is behind everything */
   }
 
   .horizon-line {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: #ea384c;
-    box-shadow: 
-      0 0 10px #ea384c,
-      0 0 20px #ea384c,
-      0 0 30px #ea384c,
-      0 0 40px #ea384c;
-    z-index: -10;
-    pointer-events: none;
-    transform: translateY(-50%);
-  }
-
-  body::after {
     content: '';
     position: fixed;
     top: 50%;
@@ -164,7 +147,7 @@
       0 0 20px #ea384c,
       0 0 30px #ea384c,
       0 0 40px #ea384c;
-    z-index: -10;
+    z-index: -1; /* Ensure horizon line is behind content but above starry background */
     pointer-events: none;
     transform: translateY(-50%);
   }
