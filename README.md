@@ -78,6 +78,7 @@ Contributions are welcome! Feel free to submit issues and pull requests.
 
 ## Information Links
 
+- [Jimmy Hotz Inventions Page](https://www.jimmyhotz.com/jimmy_hotz_inventions.html) - Learn more about Jimmy Hotz's innovative technologies
 - [Hotz MIDI Translator Demo Video](https://www.youtube.com/watch?v=pzj4y_vtTkc) - Watch a demonstration of the original Hotz MIDI Translator in action
 
 [![Hotz MIDI Translator Demo Video](https://img.youtube.com/vi/pzj4y_vtTkc/0.jpg)](https://www.youtube.com/watch?v=pzj4y_vtTkc)
