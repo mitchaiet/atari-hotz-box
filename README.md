@@ -5,6 +5,8 @@
 
 A web-based MIDI interface for translating touch gesture inputs into MIDI signals, inspired by the Hotz MIDI Translator.
 
+[![Hotz MIDI Translator Demo Video](https://img.youtube.com/vi/pzj4y_vtTkc/0.jpg)](https://www.youtube.com/watch?v=pzj4y_vtTkc)
+
 ## Project Overview
 
 The HotzBox MIDI Interface is a digital recreation of the legendary Hotz MIDI Translator, a groundbreaking device developed in the early 1980s that revolutionized MIDI input and translation for musicians and electronic music producers.
@@ -77,3 +79,4 @@ Contributions are welcome! Feel free to submit issues and pull requests.
 ## License
 
 © 2025 Mitch Chaiet. All rights reserved.
+
