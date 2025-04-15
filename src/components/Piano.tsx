@@ -1,3 +1,4 @@
+
 import React from 'react';
 import PianoKey from './PianoKey';
 import { Separator } from './ui/separator';
@@ -81,7 +82,7 @@ const Piano = () => {
   }));
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-8">
+    <div className="flex justify-center items-center min-h-screen bg-[#333333] p-8">
       <div className="flex bg-white rounded-lg shadow-2xl p-8">
         {/* New left column with 16 buttons */}
         <div className="flex flex-col mr-8">
