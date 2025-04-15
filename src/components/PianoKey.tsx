@@ -30,6 +30,7 @@ const PianoKey: React.FC<PianoKeyProps> = ({
 }) => {
   const [isPressed, setIsPressed] = useState(false);
   const touchIdRef = useRef<number | null>(null);
+  const keyRef = useRef<HTMLDivElement>(null);
 
   const handleKeyPress = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
@@ -63,6 +64,7 @@ const PianoKey: React.FC<PianoKeyProps> = ({
     touchIdRef.current = null;
   };
 
+  // Improved touch start handler with better event handling
   const handleTouchStart = (e: React.TouchEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -76,82 +78,60 @@ const PianoKey: React.FC<PianoKeyProps> = ({
     }
   };
 
-  // Global touch move handler for the piano
+  // Enhanced touch move handler with improved boundary detection
   const handleTouchMove = (e: React.TouchEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
-    // Check if there's at least one touch point
-    if (e.touches.length === 0) return;
+    // Create a list of all touches currently on the screen
+    const touchList = Array.from(e.touches);
     
-    // Get the current touch
-    let currentTouch = null;
-    for (let i = 0; i < e.touches.length; i++) {
-      if (touchIdRef.current === e.touches[i].identifier) {
-        currentTouch = e.touches[i];
-        break;
-      }
-    }
-    
-    // If we couldn't find our tracked touch, check if we're in the touch
-    if (!currentTouch) {
-      const rect = e.currentTarget.getBoundingClientRect();
+    // Check if our element has a touch over it
+    if (keyRef.current) {
+      const rect = keyRef.current.getBoundingClientRect();
       
-      // Look for any touch that's over this element
-      for (let i = 0; i < e.touches.length; i++) {
-        const touch = e.touches[i];
-        if (
+      // Find if any touch is over our element
+      const touchOverElement = touchList.find(touch => {
+        return (
           touch.clientX >= rect.left &&
           touch.clientX <= rect.right &&
           touch.clientY >= rect.top &&
           touch.clientY <= rect.bottom
-        ) {
-          currentTouch = touch;
-          touchIdRef.current = touch.identifier;
-          break;
-        }
+        );
+      });
+      
+      // If we found a touch and we're not pressed, press the key
+      if (touchOverElement && !isPressed) {
+        touchIdRef.current = touchOverElement.identifier;
+        handleKeyPress(e);
       }
-    }
-    
-    // Get bounding rectangle of the key element
-    const rect = e.currentTarget.getBoundingClientRect();
-    
-    // Check if our touch is inside this key's boundaries
-    let touchInside = false;
-    if (currentTouch) {
-      touchInside = 
-        currentTouch.clientX >= rect.left &&
-        currentTouch.clientX <= rect.right &&
-        currentTouch.clientY >= rect.top &&
-        currentTouch.clientY <= rect.bottom;
-    }
-    
-    // Handle touch entering key (press)
-    if (touchInside && !isPressed) {
-      handleKeyPress(e);
-    }
-    // Handle touch exiting key (release)
-    else if (!touchInside && isPressed) {
-      handleKeyRelease(e);
+      // If we don't have a touch over us but we're pressed, release the key
+      else if (!touchOverElement && isPressed) {
+        handleKeyRelease(e);
+      }
     }
   };
 
+  // Improved touch end handler with better tracking
   const handleTouchEnd = (e: React.TouchEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
     // Check if our tracked touch has ended
-    let touchExists = false;
-    for (let i = 0; i < e.touches.length; i++) {
-      if (touchIdRef.current !== null && e.touches[i].identifier === touchIdRef.current) {
-        touchExists = true;
-        break;
+    if (touchIdRef.current !== null) {
+      // See if our touch id still exists in the touches list
+      let touchExists = false;
+      for (let i = 0; i < e.touches.length; i++) {
+        if (e.touches[i].identifier === touchIdRef.current) {
+          touchExists = true;
+          break;
+        }
       }
-    }
-    
-    // If our tracked touch no longer exists, release the key
-    if (!touchExists && isPressed) {
-      handleKeyRelease(e);
+      
+      // If our tracked touch no longer exists, release the key
+      if (!touchExists && isPressed) {
+        handleKeyRelease(e);
+      }
     }
   };
 
@@ -175,6 +155,7 @@ const PianoKey: React.FC<PianoKeyProps> = ({
 
   return (
     <div
+      ref={keyRef}
       className={cn(
         "relative cursor-pointer transition-colors duration-100 touch-none",
         isPressed && "brightness-75",
@@ -185,7 +166,10 @@ const PianoKey: React.FC<PianoKeyProps> = ({
           : `h-48 bg-[#8cb4d5] border border-gray-200 ${baseWhiteStyle}`,
         className
       )}
-      style={style}
+      style={{
+        ...style,
+        touchAction: 'none' // Disable browser's default touch actions
+      }}
       onMouseDown={handleKeyPress}
       onMouseUp={handleKeyRelease}
       onMouseEnter={handleMouseEnter}
