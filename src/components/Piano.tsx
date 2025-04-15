@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import PianoKey from './PianoKey';
 import { Separator } from './ui/separator';
@@ -27,6 +28,11 @@ const Piano = () => {
     
     setupMidi();
   }, []);
+
+  const handleOutputChange = (outputId: string) => {
+    setSelectedOutput(outputId);
+    setMIDIOutput(outputId);
+  };
 
   const toggleFullscreen = async () => {
     try {

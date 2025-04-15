@@ -62,13 +62,15 @@ const PianoKey: React.FC<PianoKeyProps> = ({
   };
 
   const handleTouchEnter = (e: React.TouchEvent) => {
-    if (e.touches.length > 0) {
+    if (e.touches.length > 0 && !isPressed) {
       handleKeyPress(e);
     }
   };
 
   const handleTouchLeave = (e: React.TouchEvent) => {
-    handleKeyRelease(e);
+    if (isPressed) {
+      handleKeyRelease(e);
+    }
   };
 
   const baseWhiteStyle = "hover:bg-[#79a0c1] active:bg-[#6890b1] bg-[#8cb4d5]";
@@ -90,6 +92,7 @@ const PianoKey: React.FC<PianoKeyProps> = ({
       onMouseDown={handleKeyPress}
       onMouseUp={handleKeyRelease}
       onMouseLeave={isPressed ? handleKeyRelease : undefined}
+      onMouseEnter={(e) => e.buttons === 1 && handleKeyPress(e as any)}
       onTouchStart={handleKeyPress}
       onTouchEnd={handleKeyRelease}
       onTouchCancel={handleKeyRelease}
