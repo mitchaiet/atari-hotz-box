@@ -10,6 +10,7 @@ interface PianoKeyProps {
   onPress: () => void;
   style?: React.CSSProperties;
   whiteKeyColor?: string;
+  className?: string;
 }
 
 const PianoKey: React.FC<PianoKeyProps> = ({ 
@@ -19,7 +20,8 @@ const PianoKey: React.FC<PianoKeyProps> = ({
   isTopKey, 
   onPress, 
   style, 
-  whiteKeyColor = '#FFFFFF' 
+  whiteKeyColor = '#FFFFFF',
+  className
 }) => {
   const handleKeyPress = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -37,7 +39,8 @@ const PianoKey: React.FC<PianoKeyProps> = ({
           ? `h-32 bg-[#5474b4] border border-[#405a96] shadow-[0_0_10px_rgba(84,116,180,0.5)] ${baseBlackStyle}`
           : isBlack
           ? `w-6 h-24 -mx-3 z-10 bg-[#5474b4] border border-[#405a96] shadow-[0_0_10px_rgba(84,116,180,0.5)] ${baseBlackStyle}`
-          : `w-[52px] h-48 bg-[${whiteKeyColor}] border border-gray-200 ${baseWhiteStyle}`
+          : `h-48 bg-[${whiteKeyColor}] border border-gray-200 ${baseWhiteStyle}`,
+        className
       )}
       style={style}
       onMouseDown={handleKeyPress}

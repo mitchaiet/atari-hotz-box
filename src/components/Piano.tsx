@@ -143,9 +143,9 @@ const Piano = () => {
         <Separator className="mb-4 md:mb-8 bg-gray-200" />
 
         {/* Main piano layout */}
-        <div className="flex flex-col md:flex-row justify-center items-center md:items-start gap-4 md:gap-8 w-full overflow-x-auto">
+        <div className="flex flex-col md:flex-row justify-center items-center md:items-start gap-4 md:gap-8 w-full">
           {/* Left 16-button column */}
-          <div className="flex flex-row md:flex-col gap-2 md:gap-0">
+          <div className="flex flex-row md:flex-col gap-2 md:gap-0 flex-shrink-0">
             {sixteenButtonGroup.map((button, index) => (
               <PianoKey
                 key={`far-left-${index}`}
@@ -154,7 +154,8 @@ const Piano = () => {
                 isBlack={false}
                 isTopKey={true}
                 onPress={() => console.log(`Far left button ${index + 1} pressed`)}
-                style={button.style}
+                style={{...button.style, width: undefined}}
+                className="w-full md:w-[104px]"
               />
             ))}
           </div>
@@ -163,7 +164,7 @@ const Piano = () => {
           <Separator className="hidden md:block h-full bg-gray-200" orientation="vertical" />
 
           {/* Left control buttons */}
-          <div className="flex flex-row md:flex-col gap-4">
+          <div className="flex flex-row md:flex-col gap-4 flex-shrink-0">
             {verticalButtonGroups.map((group, groupIndex) => (
               <React.Fragment key={`left-group-${groupIndex}`}>
                 <div className="flex flex-row md:flex-col gap-2 md:gap-0">
@@ -175,7 +176,8 @@ const Piano = () => {
                       isBlack={false}
                       isTopKey={true}
                       onPress={() => console.log(`Left vertical button ${groupIndex * 3 + buttonIndex + 1} pressed`)}
-                      style={button.style}
+                      style={{...button.style, width: undefined}}
+                      className="w-full md:w-[104px]"
                     />
                   ))}
                 </div>
@@ -187,9 +189,9 @@ const Piano = () => {
           </div>
 
           {/* Piano section */}
-          <div className="flex flex-col items-center w-full max-w-full overflow-x-auto">
+          <div className="flex flex-col items-center flex-grow w-full">
             {/* Top row of keys */}
-            <div className="flex min-w-fit" style={{ width: `${totalWidth}px` }}>
+            <div className="flex w-full">
               {topKeys.map((key, index) => (
                 <PianoKey
                   key={`top-${index}`}
@@ -198,13 +200,14 @@ const Piano = () => {
                   isBlack={false}
                   isTopKey={true}
                   onPress={() => console.log(`Top key ${index + 1} pressed`)}
-                  style={key.style}
+                  className="flex-1"
+                  style={{width: undefined}}
                 />
               ))}
             </div>
 
             {/* Piano keys - middle row */}
-            <div className="relative flex -mt-[1px] min-w-fit" style={{ width: `${totalWidth}px` }}>
+            <div className="relative flex -mt-[1px] w-full">
               {threeOctaves.map((noteObj, index) => {
                 const octave = Math.floor(index / 12) + 4;
                 return (
@@ -216,18 +219,19 @@ const Piano = () => {
                     isTopKey={false}
                     onPress={() => handleKeyPress(noteObj.note, octave)}
                     whiteKeyColor="#8cb4d5"
+                    className={noteObj.isBlack ? undefined : "flex-1"}
                   />
                 );
               })}
             </div>
 
             {/* First Divider */}
-            <div className="mt-8 min-w-fit" style={{ width: `${totalWidth}px` }}>
+            <div className="mt-8 w-full">
               <Separator className="bg-gray-200" />
             </div>
 
             {/* Bottom row of buttons */}
-            <div className="flex mt-8 min-w-fit" style={{ width: `${totalWidth}px` }}>
+            <div className="flex mt-8 w-full">
               {bottomButtons.map((button, index) => (
                 <PianoKey
                   key={`bottom-${index}`}
@@ -236,23 +240,23 @@ const Piano = () => {
                   isBlack={false}
                   isTopKey={true}
                   onPress={() => console.log(`Bottom button ${index + 1} pressed`)}
-                  style={button.style}
+                  className="flex-1"
+                  style={{width: undefined}}
                 />
               ))}
             </div>
 
             {/* Second Divider */}
-            <div className="mt-8 min-w-fit" style={{ width: `${totalWidth}px` }}>
+            <div className="mt-8 w-full">
               <Separator className="bg-gray-200" />
             </div>
 
             {/* Final row of 12 keys */}
-            <div className="flex mt-8 min-w-fit" style={{ width: `${totalWidth}px` }}>
+            <div className="flex mt-8 w-full">
               {Array.from({ length: 12 }, (_, i) => ({
                 note: `Final${i + 1}`,
                 isBlack: false,
-                isTopKey: true,
-                style: { width: `${twelveKeyWidth}px` }
+                isTopKey: true
               })).map((key, index) => (
                 <PianoKey
                   key={`final-${index}`}
@@ -261,7 +265,7 @@ const Piano = () => {
                   isBlack={false}
                   isTopKey={true}
                   onPress={() => console.log(`Final row key ${index + 1} pressed`)}
-                  style={key.style}
+                  className="flex-1"
                 />
               ))}
             </div>
@@ -271,7 +275,7 @@ const Piano = () => {
           <Separator className="hidden md:block h-full bg-gray-200" orientation="vertical" />
 
           {/* Right control buttons */}
-          <div className="flex flex-row md:flex-col gap-4">
+          <div className="flex flex-row md:flex-col gap-4 flex-shrink-0">
             {verticalButtonGroups.map((group, groupIndex) => (
               <React.Fragment key={`right-group-${groupIndex}`}>
                 <div className="flex flex-row md:flex-col gap-2 md:gap-0">
@@ -283,7 +287,8 @@ const Piano = () => {
                       isBlack={false}
                       isTopKey={true}
                       onPress={() => console.log(`Right vertical button ${groupIndex * 3 + buttonIndex + 1} pressed`)}
-                      style={button.style}
+                      style={{...button.style, width: undefined}}
+                      className="w-full md:w-[104px]"
                     />
                   ))}
                 </div>
@@ -298,7 +303,7 @@ const Piano = () => {
           <Separator className="hidden md:block h-full bg-gray-200" orientation="vertical" />
 
           {/* Right 16-button column */}
-          <div className="flex flex-row md:flex-col gap-2 md:gap-0">
+          <div className="flex flex-row md:flex-col gap-2 md:gap-0 flex-shrink-0">
             {sixteenButtonGroup.map((button, index) => (
               <PianoKey
                 key={`far-right-${index}`}
@@ -307,7 +312,8 @@ const Piano = () => {
                 isBlack={false}
                 isTopKey={true}
                 onPress={() => console.log(`Far right button ${index + 1} pressed`)}
-                style={button.style}
+                style={{...button.style, width: undefined}}
+                className="w-full md:w-[104px]"
               />
             ))}
           </div>
