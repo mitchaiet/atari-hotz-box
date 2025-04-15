@@ -119,13 +119,16 @@ const Piano = () => {
   return <div className="flex justify-center items-center min-h-screen bg-[#333333] p-8">
     <div className="flex flex-col rounded-lg shadow-2xl p-8 bg-slate-900 w-full">
       {/* New layout for logo and divider */}
-      <div className="flex items-center mb-4">
+      <div className="flex items-center justify-between mb-4">
         <img 
           src="/lovable-uploads/d0be4dda-e062-4ecc-8661-b1c242693570.png" 
           alt="Atari Hotz Logo" 
           className="h-16 w-auto object-contain mr-4" 
         />
-        <Separator className="flex-grow bg-gray-200" />
+        <div className="text-white text-2xl font-bold tracking-wider">
+          MIDI TRANSLATOR
+        </div>
+        <Separator className="absolute left-0 right-0 top-full bg-gray-200" />
       </div>
 
       {/* Divider after logo */}
