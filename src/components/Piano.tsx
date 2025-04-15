@@ -178,37 +178,15 @@ const Piano = () => {
 
   return (
     <div 
-      className="flex justify-center items-center min-h-screen 
-      bg-[#0A0E1B] 
-      bg-[linear-gradient(to_bottom,rgba(10,14,27,1)_0%,rgba(10,14,27,0.9)_100%)] 
-      relative 
-      overflow-hidden 
-      p-4 md:p-8"
+      className="flex justify-center items-center min-h-screen relative overflow-hidden p-4 md:p-8"
+      style={{
+        backgroundImage: `url('/lovable-uploads/496795d9-5b88-4d18-955c-737d33496e6a.png')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
     >
-      <div 
-        className="absolute inset-0 pointer-events-none z-0" 
-        style={{
-          backgroundImage: 'linear-gradient(rgba(22, 35, 66, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(22, 35, 66, 0.3) 1px, transparent 1px)',
-          backgroundSize: '20px 20px',
-          opacity: 0.5
-        }}
-      />
-
-      <div 
-        className="absolute inset-0 pointer-events-none z-10"
-        style={{
-          background: 'radial-gradient(circle at center, transparent 0%, rgba(10,14,27,0.6) 100%)',
-          backgroundImage: `
-            radial-gradient(white 1px, transparent 1px),
-            radial-gradient(white 1px, transparent 1px)
-          `,
-          backgroundPosition: '0 0, 10px 10px',
-          backgroundSize: '20px 20px',
-          opacity: 0.5
-        }}
-      />
-
-      <div className="flex flex-col rounded-lg shadow-2xl p-4 md:p-8 bg-[rgba(10,14,27,0.8)] w-full max-w-[1400px] mx-auto 
+      <div className="flex flex-col rounded-lg shadow-2xl p-4 md:p-8 bg-[rgba(10,14,27,0.7)] w-full max-w-[1400px] mx-auto 
         border-[16px] border-[#1A2746] 
         relative 
         z-20">
