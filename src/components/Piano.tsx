@@ -178,7 +178,15 @@ const Piano = () => {
           }}>
             {threeOctaves.map((noteObj, index) => {
               const octave = Math.floor(index / 12) + 4;
-              return <PianoKey key={`${noteObj.note}-${octave}-${index}`} note={noteObj.note} octave={octave} isBlack={noteObj.isBlack} isTopKey={false} onPress={() => handleKeyPress(noteObj.note, octave)} whiteKeyColor="#8cb4d5" />;
+              return <PianoKey 
+                key={`${noteObj.note}-${octave}-${index}`} 
+                note={noteObj.note} 
+                octave={octave} 
+                isBlack={noteObj.isBlack} 
+                isTopKey={false} 
+                onPress={() => handleKeyPress(noteObj.note, octave)} 
+                whiteKeyColor="#ffffff" 
+              />;
             })}
           </div>
 
