@@ -3,7 +3,7 @@
 
 ![Hotz MIDI Translator Interface](/public/lovable-uploads/Hotz_Translator_MIDI_Interface.png)
 
-A web-based MIDI interface for translating keyboard inputs into MIDI signals, inspired by the Hotz MIDI Translator.
+A web-based MIDI interface for translating touch gesture inputs into MIDI signals, inspired by the Hotz MIDI Translator.
 
 ## Project Overview
 
