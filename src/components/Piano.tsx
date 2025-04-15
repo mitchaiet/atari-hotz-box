@@ -1,4 +1,3 @@
-
 import React from 'react';
 import PianoKey from './PianoKey';
 import { Separator } from './ui/separator';
