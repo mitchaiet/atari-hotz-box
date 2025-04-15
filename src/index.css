@@ -1,3 +1,4 @@
+
 @import '@fontsource/orbitron/400.css';
 @import '@fontsource/orbitron/700.css';
 
@@ -132,7 +133,7 @@
     pointer-events: none;
   }
 
-  body::after {
+  .horizon-line {
     content: '';
     position: absolute;
     top: 50%;
@@ -145,7 +146,25 @@
       0 0 20px #ea384c,
       0 0 30px #ea384c,
       0 0 40px #ea384c;
-    z-index: 0;
+    z-index: -10;
+    pointer-events: none;
+    transform: translateY(-50%);
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #ea384c;
+    box-shadow: 
+      0 0 10px #ea384c,
+      0 0 20px #ea384c,
+      0 0 30px #ea384c,
+      0 0 40px #ea384c;
+    z-index: -10;
     pointer-events: none;
     transform: translateY(-50%);
   }
