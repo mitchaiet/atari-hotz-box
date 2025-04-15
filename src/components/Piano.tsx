@@ -15,28 +15,35 @@ const Piano = () => {
     { note: 'B', isBlack: false },
   ];
 
-  // Calculate width for top keys
-  // Bottom row: 36 keys total (21 white keys × 52px width)
-  // Total width of bottom row = 1092px (21 × 52px)
-  // For 15 top keys, each should be 1092/15 ≈ 72.8px
+  // Repeat the notes for three octaves
+  const threeOctaves = [...notes, ...notes, ...notes];
+  
+  // Get white keys for bottom row - exactly 21 keys
+  const whiteKeys = threeOctaves.filter(note => !note.isBlack).slice(0, 21);
+  
+  // Calculate width for middle row - 36 keys (21 white keys × 52px width)
+  const totalWidth = 1092; // 21 white keys × 52px = 1092px
+
+  // Calculate width for top keys - 15 keys should span the same width
+  const topKeyWidth = totalWidth / 15; // 1092px ÷ 15 = 72.8px
+  
+  // Calculate width for bottom keys - 21 keys should span the same width
+  const bottomKeyWidth = totalWidth / 21; // 1092px ÷ 21 = 52px
+  
+  // Top row - 15 keys
   const topKeys = Array.from({ length: 15 }, (_, i) => ({
     note: `Key${i + 1}`,
     isBlack: false,
-    isTopKey: true
+    isTopKey: true,
+    style: { width: `${topKeyWidth}px` }
   }));
-
-  // Repeat the notes for three octaves
-  const threeOctaves = [...notes, ...notes, ...notes];
-
-  // Get only white keys for the bottom row - exactly 21 keys
-  const whiteKeys = threeOctaves.filter(note => !note.isBlack).slice(0, 21);
   
-  // Calculate the correct width for each button in the bottom row
-  // Piano white keys width = 21 × 52px = 1092px
+  // Bottom row - 21 keys
   const bottomButtons = whiteKeys.map((note, index) => ({
     note: `Button${index + 1}`,
     isBlack: false,
-    isTopKey: true
+    isTopKey: true,
+    style: { width: `${bottomKeyWidth}px` }
   }));
 
   const handleKeyPress = (note: string, octave: number) => {
@@ -46,8 +53,8 @@ const Piano = () => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 p-8">
       <div className="relative flex flex-col bg-white rounded-lg shadow-2xl p-8">
-        {/* Top row of keys */}
-        <div className="flex">
+        {/* Top row of keys - fixed width container */}
+        <div className="flex" style={{ width: `${totalWidth}px` }}>
           {topKeys.map((key, index) => (
             <PianoKey
               key={`top-${index}`}
@@ -56,12 +63,13 @@ const Piano = () => {
               isBlack={false}
               isTopKey={true}
               onPress={() => console.log(`Top key ${index + 1} pressed`)}
+              style={key.style}
             />
           ))}
         </div>
         
-        {/* Piano keys */}
-        <div className="relative flex -mt-[1px]">
+        {/* Piano keys - middle row */}
+        <div className="relative flex -mt-[1px]" style={{ width: `${totalWidth}px` }}>
           {threeOctaves.map((noteObj, index) => {
             const octave = Math.floor(index / 12) + 4;
             return (
@@ -78,12 +86,12 @@ const Piano = () => {
         </div>
 
         {/* Divider */}
-        <div className="mt-8">
+        <div className="mt-8" style={{ width: `${totalWidth}px` }}>
           <Separator className="bg-gray-200" />
         </div>
 
-        {/* Bottom row of buttons */}
-        <div className="flex gap-0 mt-8 w-full">
+        {/* Bottom row of buttons - fixed width container */}
+        <div className="flex mt-8" style={{ width: `${totalWidth}px` }}>
           {bottomButtons.map((button, index) => (
             <PianoKey
               key={`bottom-${index}`}
@@ -92,6 +100,7 @@ const Piano = () => {
               isBlack={false}
               isTopKey={true}
               onPress={() => console.log(`Bottom button ${index + 1} pressed`)}
+              style={button.style}
             />
           ))}
         </div>
