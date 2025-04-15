@@ -27,11 +27,10 @@ const Piano = () => {
   // Repeat the notes for three octaves
   const threeOctaves = [...notes, ...notes, ...notes];
 
-  // Calculate button width to match total piano width
+  // Calculate bottom row keys to match the total width of the 36-key row
   // Total width of 36 keys = (21 white keys × 52px) = 1092px
-  // For 21 buttons, each should be approximately 52px
-  const bottomButtons = Array.from({ length: 21 }, (_, i) => ({
-    note: `Button${i + 1}`,
+  const bottomButtons = threeOctaves.filter(note => !note.isBlack).slice(0, 21).map((note, index) => ({
+    note: `Button${index + 1}`,
     isBlack: false,
     isTopKey: true
   }));
