@@ -1,3 +1,4 @@
+
 import React from 'react';
 import PianoKey from './PianoKey';
 import { Separator } from './ui/separator';
@@ -58,7 +59,11 @@ const Piano = () => {
       note: `Side${groupIndex * 3 + buttonIndex + 1}`,
       isBlack: false,
       isTopKey: true,
-      style: { width: '52px', height: '52px' }
+      style: { 
+        width: '52px', 
+        height: '52px',
+        marginBottom: groupIndex < 3 ? '0' : '0' // Remove margin between buttons in a group
+      }
     }))
   );
 
@@ -69,7 +74,7 @@ const Piano = () => {
         <div className="flex flex-col mr-8">
           {verticalButtonGroups.map((group, groupIndex) => (
             <React.Fragment key={`group-${groupIndex}`}>
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-0"> {/* Changed gap-2 to gap-0 */}
                 {group.map((button, buttonIndex) => (
                   <PianoKey
                     key={`vertical-${groupIndex}-${buttonIndex}`}
