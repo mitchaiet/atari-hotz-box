@@ -5,6 +5,7 @@ import { initMIDI, isMIDISupported, getMIDIOutputs, setMIDIOutput } from '@/util
 import { Button } from './ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Maximize, Minimize } from 'lucide-react';
+import MIDIOutputSelector from './MIDIOutputSelector';
 
 const Piano = () => {
   const [midiInitialized, setMidiInitialized] = useState(false);
@@ -184,36 +185,18 @@ const Piano = () => {
             MIDI TRANSLATOR
           </div>
           
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             <div className={`h-2 w-2 rounded-full ${
               !isMIDISupported() ? 'bg-red-500' :
               !midiInitialized ? 'bg-yellow-500' :
               midiOutputs.length > 0 ? 'bg-green-500' : 'bg-red-500'
             }`} />
-            <span className="text-white text-xs">
-              {getMidiStatus()}
-            </span>
             
-            {midiInitialized && midiOutputs.length > 0 && (
-              <Select value={selectedOutput} onValueChange={handleOutputChange}>
-                <SelectTrigger className="w-[180px] bg-slate-800 text-white border-slate-700 text-xs">
-                  <SelectValue placeholder="Select MIDI Output" />
-                </SelectTrigger>
-                <SelectContent className="bg-slate-800 text-white border-slate-700">
-                  {midiOutputs.map((output) => (
-                    <SelectItem 
-                      key={output.id} 
-                      value={output.id}
-                      className="text-xs"
-                    >
-                      {output.name}
-                      <span className="ml-2 text-slate-400">
-                        ({output.manufacturer || 'Unknown'})
-                      </span>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            {midiInitialized && (
+              <MIDIOutputSelector
+                selectedOutput={selectedOutput}
+                onOutputChange={handleOutputChange}
+              />
             )}
             
             <Button
