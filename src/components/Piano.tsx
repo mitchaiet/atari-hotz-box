@@ -117,7 +117,15 @@ const Piano = () => {
     }
   }));
   return <div className="flex justify-center items-center min-h-screen bg-[#333333] p-8">
-    <div className="flex flex-col rounded-lg shadow-2xl p-8 bg-slate-900 w-full">
+    <div className="flex flex-col rounded-lg shadow-2xl p-8 bg-slate-900 w-full 
+      border-[16px] border-[#403E43] 
+      relative 
+      before:absolute before:inset-0 
+      before:border-[8px] 
+      before:border-[#221F26] 
+      before:pointer-events-none 
+      before:z-[-1]"
+    >
       {/* New layout for logo and divider */}
       <div className="flex items-center justify-between mb-4">
         <img 
