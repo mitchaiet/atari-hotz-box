@@ -19,14 +19,14 @@ const PianoKey: React.FC<PianoKeyProps> = ({
   isTopKey, 
   onPress, 
   style, 
-  whiteKeyColor = '#ffffff' 
+  whiteKeyColor = '#FFFFFF' 
 }) => {
   const handleKeyPress = (e: React.MouseEvent) => {
     e.preventDefault();
     onPress();
   };
 
-  const baseWhiteStyle = "hover:bg-[#f0f0f0] active:bg-[#e0e0e0]";
+  const baseWhiteStyle = "hover:bg-[#F1F1F1] active:bg-[#E0E0E0]";
   const baseBlackStyle = "hover:bg-[#405a96] active:bg-[#344b7d]";
 
   return (
