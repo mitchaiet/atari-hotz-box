@@ -1,17 +1,17 @@
-
 import React, { useEffect, useState } from 'react';
 import PianoKey from './PianoKey';
 import { Separator } from './ui/separator';
-import { initMIDI, isMIDISupported, isMIDIAccessGranted, getMIDIOutputs, setMIDIOutput } from '@/utils/midiUtils';
+import { initMIDI, isMIDISupported, getMIDIOutputs, setMIDIOutput } from '@/utils/midiUtils';
 import { Button } from './ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { Maximize, Minimize } from 'lucide-react';
 
 const Piano = () => {
   const [midiInitialized, setMidiInitialized] = useState(false);
   const [midiOutputs, setMidiOutputs] = useState<WebMidi.MIDIOutput[]>([]);
   const [selectedOutput, setSelectedOutput] = useState<string>("");
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
-  // Initialize MIDI when component mounts
   useEffect(() => {
     const setupMidi = async () => {
       const initialized = await initMIDI();
@@ -28,13 +28,29 @@ const Piano = () => {
     setupMidi();
   }, []);
 
-  // Handle MIDI output change
-  const handleOutputChange = (outputId: string) => {
-    setSelectedOutput(outputId);
-    setMIDIOutput(outputId);
+  const toggleFullscreen = async () => {
+    try {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen();
+        setIsFullscreen(true);
+      } else {
+        await document.exitFullscreen();
+        setIsFullscreen(false);
+      }
+    } catch (err) {
+      console.error('Error toggling fullscreen:', err);
+    }
   };
 
-  // Define the notes for three octaves
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
   const notes = [{
     note: 'C',
     isBlack: false
@@ -73,25 +89,15 @@ const Piano = () => {
     isBlack: false
   }];
 
-  // Repeat the notes for three octaves
   const threeOctaves = [...notes, ...notes, ...notes];
 
-  // Get white keys for bottom row - exactly 21 keys
   const whiteKeys = threeOctaves.filter(note => !note.isBlack).slice(0, 21);
 
-  // Calculate width for middle row - 36 keys (21 white keys × 52px width)
-  const totalWidth = 1092; // 21 white keys × 52px = 1092px
+  const totalWidth = 1092;
+  const topKeyWidth = totalWidth / 15;
+  const bottomKeyWidth = totalWidth / 21;
+  const twelveKeyWidth = totalWidth / 12;
 
-  // Calculate width for top keys - 15 keys should span the same width
-  const topKeyWidth = totalWidth / 15; // 1092px ÷ 15 = 72.8px
-
-  // Calculate width for bottom keys - 21 keys should span the same width
-  const bottomKeyWidth = totalWidth / 21; // 1092px ÷ 21 = 52px
-
-  // Calculate width for 12-key bottom row
-  const twelveKeyWidth = totalWidth / 12; // 1092px ÷ 12 = 91px
-
-  // Top row - 15 keys
   const topKeys = Array.from({
     length: 15
   }, (_, i) => ({
@@ -103,7 +109,6 @@ const Piano = () => {
     }
   }));
 
-  // Bottom row - 21 keys
   const bottomButtons = whiteKeys.map((note, index) => ({
     note: `Button${index + 1}`,
     isBlack: false,
@@ -112,11 +117,11 @@ const Piano = () => {
       width: `${bottomKeyWidth}px`
     }
   }));
+
   const handleKeyPress = (note: string, octave: number) => {
     console.log(`Key pressed: ${note} (Octave ${octave})`);
   };
 
-  // Create vertical button groups - 4 groups of 3 buttons (12 total)
   const verticalButtonGroups = Array.from({
     length: 4
   }, (_, groupIndex) => Array.from({
@@ -133,7 +138,6 @@ const Piano = () => {
     }
   })));
 
-  // Create the new column of 16 buttons
   const sixteenButtonGroup = Array.from({
     length: 16
   }, (_, index) => ({
@@ -147,7 +151,7 @@ const Piano = () => {
       marginBottom: '0'
     }
   }));
-  
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-[#333333] p-4 md:p-8">
       <div className="flex flex-col rounded-lg shadow-2xl p-4 md:p-8 bg-slate-900 w-full max-w-[1400px] mx-auto 
@@ -159,7 +163,6 @@ const Piano = () => {
         before:pointer-events-none 
         before:z-[-1]">
         
-        {/* Logo and title section */}
         <div className="flex items-center justify-between mb-4 w-full">
           <img 
             src="/lovable-uploads/d0be4dda-e062-4ecc-8661-b1c242693570.png" 
@@ -170,7 +173,6 @@ const Piano = () => {
             MIDI TRANSLATOR
           </div>
           
-          {/* MIDI Status and Controls */}
           <div className="flex items-center gap-2">
             <div className={`h-3 w-3 rounded-full ${midiInitialized ? 'bg-green-500' : 'bg-red-500'}`} />
             <span className="text-white text-sm">
@@ -192,25 +194,21 @@ const Piano = () => {
               </Select>
             )}
             
-            {!midiInitialized && isMIDISupported() && (
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={() => initMIDI().then(success => setMidiInitialized(success))}
-                className="text-white border-white"
-              >
-                Initialize MIDI
-              </Button>
-            )}
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={toggleFullscreen}
+              className="text-white border-white ml-2"
+              aria-label="Toggle fullscreen"
+            >
+              {isFullscreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
+            </Button>
           </div>
         </div>
 
-        {/* Divider after logo */}
         <Separator className="mb-4 md:mb-8 bg-gray-200" />
 
-        {/* Main piano layout */}
         <div className="flex flex-col md:flex-row justify-center items-center md:items-start gap-4 md:gap-8 w-full">
-          {/* Left 16-button column */}
           <div className="flex flex-row md:flex-col gap-2 md:gap-0 flex-shrink-0">
             {sixteenButtonGroup.map((button, index) => (
               <PianoKey
@@ -228,10 +226,8 @@ const Piano = () => {
             ))}
           </div>
 
-          {/* Left separator */}
           <Separator className="hidden md:block h-full bg-gray-200" orientation="vertical" />
 
-          {/* Left control buttons */}
           <div className="flex flex-row md:flex-col gap-4 flex-shrink-0">
             {verticalButtonGroups.map((group, groupIndex) => (
               <React.Fragment key={`left-group-${groupIndex}`}>
@@ -258,9 +254,7 @@ const Piano = () => {
             ))}
           </div>
 
-          {/* Piano section */}
           <div className="flex flex-col items-center flex-grow w-full">
-            {/* Top row of keys */}
             <div className="flex w-full">
               {topKeys.map((key, index) => (
                 <PianoKey
@@ -278,7 +272,6 @@ const Piano = () => {
               ))}
             </div>
 
-            {/* Piano keys - middle row */}
             <div className="relative flex -mt-[1px] w-full">
               {threeOctaves.map((noteObj, index) => {
                 const octave = Math.floor(index / 12) + 4;
@@ -297,12 +290,10 @@ const Piano = () => {
               })}
             </div>
 
-            {/* First Divider */}
             <div className="mt-8 w-full">
               <Separator className="bg-gray-200" />
             </div>
 
-            {/* Bottom row of buttons */}
             <div className="flex mt-8 w-full">
               {bottomButtons.map((button, index) => (
                 <PianoKey
@@ -320,12 +311,10 @@ const Piano = () => {
               ))}
             </div>
 
-            {/* Second Divider */}
             <div className="mt-8 w-full">
               <Separator className="bg-gray-200" />
             </div>
 
-            {/* Final row of 12 keys */}
             <div className="flex mt-8 w-full">
               {Array.from({ length: 12 }, (_, i) => ({
                 note: `Final${i + 1}`,
@@ -347,10 +336,8 @@ const Piano = () => {
             </div>
           </div>
 
-          {/* Right separator */}
           <Separator className="hidden md:block h-full bg-gray-200" orientation="vertical" />
 
-          {/* Right control buttons */}
           <div className="flex flex-row md:flex-col gap-4 flex-shrink-0">
             {verticalButtonGroups.map((group, groupIndex) => (
               <React.Fragment key={`right-group-${groupIndex}`}>
@@ -377,10 +364,8 @@ const Piano = () => {
             ))}
           </div>
 
-          {/* Right separator */}
           <Separator className="hidden md:block h-full bg-gray-200" orientation="vertical" />
 
-          {/* Right 16-button column */}
           <div className="flex flex-row md:flex-col gap-2 md:gap-0 flex-shrink-0">
             {sixteenButtonGroup.map((button, index) => (
               <PianoKey

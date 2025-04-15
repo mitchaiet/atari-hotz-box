@@ -30,17 +30,15 @@ const PianoKey: React.FC<PianoKeyProps> = ({
 }) => {
   const [isPressed, setIsPressed] = useState(false);
 
-  const handleKeyPress = (e: React.MouseEvent) => {
+  const handleKeyPress = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
+    if (isPressed) return; // Prevent multiple triggers
     
     const midiNote = mapKeyToMIDINote(note, octave);
     
-    // Send appropriate MIDI message
     if (isCCControl && ccNumber !== undefined) {
-      // For control buttons, send a CC message with value 127 (max)
       sendControlChange(ccNumber, 127);
     } else {
-      // For note keys, send note on message
       sendNoteOn(midiNote);
     }
     
@@ -48,21 +46,29 @@ const PianoKey: React.FC<PianoKeyProps> = ({
     onPress();
   };
 
-  const handleKeyRelease = (e: React.MouseEvent) => {
+  const handleKeyRelease = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
+    if (!isPressed) return;
     
     const midiNote = mapKeyToMIDINote(note, octave);
     
-    // Send appropriate MIDI off message
     if (isCCControl && ccNumber !== undefined) {
-      // For control buttons, send a CC message with value 0 (min)
       sendControlChange(ccNumber, 0);
     } else {
-      // For note keys, send note off message
       sendNoteOff(midiNote);
     }
     
     setIsPressed(false);
+  };
+
+  const handleTouchEnter = (e: React.TouchEvent) => {
+    if (e.touches.length > 0) {
+      handleKeyPress(e);
+    }
+  };
+
+  const handleTouchLeave = (e: React.TouchEvent) => {
+    handleKeyRelease(e);
   };
 
   const baseWhiteStyle = "hover:bg-[#79a0c1] active:bg-[#6890b1] bg-[#8cb4d5]";
@@ -71,7 +77,7 @@ const PianoKey: React.FC<PianoKeyProps> = ({
   return (
     <div
       className={cn(
-        "relative cursor-pointer transition-colors duration-100",
+        "relative cursor-pointer transition-colors duration-100 touch-none",
         isPressed && "brightness-75",
         isTopKey
           ? `h-32 bg-[#5474b4] border border-[#405a96] shadow-[0_0_10px_rgba(84,116,180,0.5)] ${baseBlackStyle}`
@@ -84,6 +90,10 @@ const PianoKey: React.FC<PianoKeyProps> = ({
       onMouseDown={handleKeyPress}
       onMouseUp={handleKeyRelease}
       onMouseLeave={isPressed ? handleKeyRelease : undefined}
+      onTouchStart={handleKeyPress}
+      onTouchEnd={handleKeyRelease}
+      onTouchCancel={handleKeyRelease}
+      onTouchMove={handleTouchEnter}
       role="button"
       aria-label={`${note}${octave}`}
       aria-pressed={isPressed}
