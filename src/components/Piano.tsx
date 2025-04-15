@@ -52,7 +52,7 @@ const Piano = () => {
     console.log(`Key pressed: ${note} (Octave ${octave})`);
   };
 
-  // Create vertical button groups - 4 groups of 3 buttons
+  // Create vertical button groups - 4 groups of 3 buttons (12 total)
   const verticalButtonGroups = Array.from({ length: 4 }, (_, groupIndex) =>
     Array.from({ length: 3 }, (_, buttonIndex) => ({
       note: `Side${groupIndex * 3 + buttonIndex + 1}`,
@@ -67,10 +67,43 @@ const Piano = () => {
     }))
   );
 
+  // Create the new column of 16 buttons
+  const sixteenButtonGroup = Array.from({ length: 16 }, (_, index) => ({
+    note: `Left${index + 1}`,
+    isBlack: false,
+    isTopKey: true,
+    style: {
+      width: '104px',
+      height: '39px',
+      backgroundColor: '#8cb4d5',
+      marginBottom: index < 15 ? '0' : '0'
+    }
+  }));
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 p-8">
       <div className="flex bg-white rounded-lg shadow-2xl p-8">
-        {/* Left vertical section */}
+        {/* New left column with 16 buttons */}
+        <div className="flex flex-col mr-8">
+          <div className="flex flex-col gap-0">
+            {sixteenButtonGroup.map((button, index) => (
+              <PianoKey
+                key={`far-left-${index}`}
+                note={button.note}
+                octave={0}
+                isBlack={false}
+                isTopKey={true}
+                onPress={() => console.log(`Far left button ${index + 1} pressed`)}
+                style={button.style}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Separator between new column and existing left column */}
+        <Separator className="mx-4 h-full bg-gray-200" orientation="vertical" />
+
+        {/* Original left vertical section */}
         <div className="flex flex-col mr-8">
           {verticalButtonGroups.map((group, groupIndex) => (
             <React.Fragment key={`left-group-${groupIndex}`}>
@@ -95,9 +128,6 @@ const Piano = () => {
             </React.Fragment>
           ))}
         </div>
-
-        {/* Left vertical divider */}
-        <Separator className="mx-4 h-full bg-gray-200" orientation="vertical" />
 
         {/* Piano section */}
         <div className="flex flex-col">
