@@ -32,7 +32,7 @@ const Piano = () => {
     <div className="flex justify-center items-center min-h-screen bg-gray-100 p-8">
       <div className="relative flex flex-col bg-white rounded-lg shadow-2xl p-8">
         {/* Top row of keys */}
-        <div className="flex mb-4">
+        <div className="flex">
           {topKeys.map((key, index) => (
             <PianoKey
               key={`top-${index}`}
@@ -45,7 +45,7 @@ const Piano = () => {
           ))}
         </div>
         {/* Piano keys */}
-        <div className="relative flex">
+        <div className="relative flex -mt-[1px]">
           {threeOctaves.map((noteObj, index) => {
             const octave = Math.floor(index / 12) + 4;
             return (
