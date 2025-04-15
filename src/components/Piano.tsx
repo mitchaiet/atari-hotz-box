@@ -162,10 +162,11 @@ const Piano = () => {
     }
   })));
 
+  // Updating sixteenButtonGroup to match styles
   const sixteenButtonGroup = Array.from({
     length: 16
   }, (_, index) => ({
-    note: `Left${index + 1}`,
+    note: `Button${index + 1}`,
     isBlack: false,
     isTopKey: true,
     style: {
@@ -243,7 +244,7 @@ const Piano = () => {
             {sixteenButtonGroup.map((button, index) => (
               <PianoKey
                 key={`far-left-${index}`}
-                note={button.note}
+                note={`Left${index + 1}`}
                 octave={0}
                 isBlack={false}
                 isTopKey={true}
@@ -265,7 +266,7 @@ const Piano = () => {
                   {group.map((button, buttonIndex) => (
                     <PianoKey
                       key={`left-vertical-${groupIndex}-${buttonIndex}`}
-                      note={button.note}
+                      note={`Side${groupIndex * 3 + buttonIndex + 1}`}
                       octave={0}
                       isBlack={false}
                       isTopKey={true}
@@ -375,7 +376,7 @@ const Piano = () => {
                   {group.map((button, buttonIndex) => (
                     <PianoKey
                       key={`right-vertical-${groupIndex}-${buttonIndex}`}
-                      note={button.note}
+                      note={`Side${groupIndex * 3 + buttonIndex + 1}`}
                       octave={0}
                       isBlack={false}
                       isTopKey={true}
@@ -400,7 +401,7 @@ const Piano = () => {
             {sixteenButtonGroup.map((button, index) => (
               <PianoKey
                 key={`far-right-${index}`}
-                note={button.note}
+                note={`Right${index + 1}`}
                 octave={0}
                 isBlack={false}
                 isTopKey={true}
