@@ -52,84 +52,126 @@ const Piano = () => {
     console.log(`Key pressed: ${note} (Octave ${octave})`);
   };
 
+  // Create vertical button groups - 4 groups of 3 buttons
+  const verticalButtonGroups = Array.from({ length: 4 }, (_, groupIndex) =>
+    Array.from({ length: 3 }, (_, buttonIndex) => ({
+      note: `Side${groupIndex * 3 + buttonIndex + 1}`,
+      isBlack: false,
+      isTopKey: true,
+      style: { width: '52px', height: '52px' }
+    }))
+  );
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 p-8">
-      <div className="relative flex flex-col bg-white rounded-lg shadow-2xl p-8">
-        {/* Top row of keys */}
-        <div className="flex" style={{ width: `${totalWidth}px` }}>
-          {topKeys.map((key, index) => (
-            <PianoKey
-              key={`top-${index}`}
-              note={key.note}
-              octave={0}
-              isBlack={false}
-              isTopKey={true}
-              onPress={() => console.log(`Top key ${index + 1} pressed`)}
-              style={key.style}
-            />
+      <div className="flex bg-white rounded-lg shadow-2xl p-8">
+        {/* Vertical section */}
+        <div className="flex flex-col mr-8">
+          {verticalButtonGroups.map((group, groupIndex) => (
+            <React.Fragment key={`group-${groupIndex}`}>
+              <div className="flex flex-col gap-2">
+                {group.map((button, buttonIndex) => (
+                  <PianoKey
+                    key={`vertical-${groupIndex}-${buttonIndex}`}
+                    note={button.note}
+                    octave={0}
+                    isBlack={false}
+                    isTopKey={true}
+                    onPress={() => console.log(`Vertical button ${groupIndex * 3 + buttonIndex + 1} pressed`)}
+                    style={button.style}
+                  />
+                ))}
+              </div>
+              {groupIndex < verticalButtonGroups.length - 1 && (
+                <div className="my-4">
+                  <Separator className="bg-gray-200" orientation="horizontal" />
+                </div>
+              )}
+            </React.Fragment>
           ))}
         </div>
-        
-        {/* Piano keys - middle row */}
-        <div className="relative flex -mt-[1px]" style={{ width: `${totalWidth}px` }}>
-          {threeOctaves.map((noteObj, index) => {
-            const octave = Math.floor(index / 12) + 4;
-            return (
+
+        {/* Vertical divider */}
+        <Separator className="mx-4 h-full bg-gray-200" orientation="vertical" />
+
+        {/* Piano section */}
+        <div className="flex flex-col">
+          {/* Top row of keys */}
+          <div className="flex" style={{ width: `${totalWidth}px` }}>
+            {topKeys.map((key, index) => (
               <PianoKey
-                key={`${noteObj.note}-${octave}-${index}`}
-                note={noteObj.note}
-                octave={octave}
-                isBlack={noteObj.isBlack}
-                isTopKey={false}
-                onPress={() => handleKeyPress(noteObj.note, octave)}
+                key={`top-${index}`}
+                note={key.note}
+                octave={0}
+                isBlack={false}
+                isTopKey={true}
+                onPress={() => console.log(`Top key ${index + 1} pressed`)}
+                style={key.style}
               />
-            );
-          })}
-        </div>
+            ))}
+          </div>
+          
+          {/* Piano keys - middle row */}
+          <div className="relative flex -mt-[1px]" style={{ width: `${totalWidth}px` }}>
+            {threeOctaves.map((noteObj, index) => {
+              const octave = Math.floor(index / 12) + 4;
+              return (
+                <PianoKey
+                  key={`${noteObj.note}-${octave}-${index}`}
+                  note={noteObj.note}
+                  octave={octave}
+                  isBlack={noteObj.isBlack}
+                  isTopKey={false}
+                  onPress={() => handleKeyPress(noteObj.note, octave)}
+                />
+              );
+            })}
+          </div>
 
-        {/* First Divider */}
-        <div className="mt-8" style={{ width: `${totalWidth}px` }}>
-          <Separator className="bg-gray-200" />
-        </div>
+          {/* First Divider */}
+          <div className="mt-8" style={{ width: `${totalWidth}px` }}>
+            <Separator className="bg-gray-200" />
+          </div>
 
-        {/* Bottom row of buttons */}
-        <div className="flex mt-8" style={{ width: `${totalWidth}px` }}>
-          {bottomButtons.map((button, index) => (
-            <PianoKey
-              key={`bottom-${index}`}
-              note={button.note}
-              octave={0}
-              isBlack={false}
-              isTopKey={true}
-              onPress={() => console.log(`Bottom button ${index + 1} pressed`)}
-              style={button.style}
-            />
-          ))}
-        </div>
+          {/* Bottom row of buttons */}
+          <div className="flex mt-8" style={{ width: `${totalWidth}px` }}>
+            {bottomButtons.map((button, index) => (
+              <PianoKey
+                key={`bottom-${index}`}
+                note={button.note}
+                octave={0}
+                isBlack={false}
+                isTopKey={true}
+                onPress={() => console.log(`Bottom button ${index + 1} pressed`)}
+                style={button.style}
+              />
+            ))}
+          </div>
 
-        {/* Second Divider */}
-        <div className="mt-8" style={{ width: `${totalWidth}px` }}>
-          <Separator className="bg-gray-200" />
-        </div>
+          {/* Second Divider */}
+          <div className="mt-8" style={{ width: `${totalWidth}px` }}>
+            <Separator className="bg-gray-200" />
+          </div>
 
-        {/* Final row of 12 keys */}
-        <div className="flex mt-8" style={{ width: `${totalWidth}px` }}>
-          {Array.from({ length: 12 }, (_, i) => ({
-            note: `Final${i + 1}`,
-            isBlack: false,
-            isTopKey: true,
-            style: { width: `${twelveKeyWidth}px` }
-          })).map((key, index) => (
-            <PianoKey
-              key={`final-${index}`}
-              note={key.note}
-              octave={0}
-              isBlack={false}
-              isTopKey={true}
-              onPress={() => console.log(`Final row key ${index + 1} pressed`)}
-              style={key.style}
-            />
-          ))}
+          {/* Final row of 12 keys */}
+          <div className="flex mt-8" style={{ width: `${totalWidth}px` }}>
+            {Array.from({ length: 12 }, (_, i) => ({
+              note: `Final${i + 1}`,
+              isBlack: false,
+              isTopKey: true,
+              style: { width: `${twelveKeyWidth}px` }
+            })).map((key, index) => (
+              <PianoKey
+                key={`final-${index}`}
+                note={key.note}
+                octave={0}
+                isBlack={false}
+                isTopKey={true}
+                onPress={() => console.log(`Final row key ${index + 1} pressed`)}
+                style={key.style}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>
