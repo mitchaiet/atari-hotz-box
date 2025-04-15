@@ -36,7 +36,7 @@ const PianoKey: React.FC<PianoKeyProps> = ({
         isTopKey
           ? `h-32 bg-[#5474b4] border border-[#405a96] shadow-[0_0_10px_rgba(84,116,180,0.5)] ${baseBlackStyle}`
           : isBlack
-          ? `w-4 h-24 -mx-2 z-10 bg-[#5474b4] border border-[#405a96] shadow-[0_0_10px_rgba(84,116,180,0.5)] ${baseBlackStyle}`
+          ? `w-6 h-24 -mx-3 z-10 bg-[#5474b4] border border-[#405a96] shadow-[0_0_10px_rgba(84,116,180,0.5)] ${baseBlackStyle}`
           : `w-[52px] h-48 bg-[${whiteKeyColor}] border border-gray-200 ${baseWhiteStyle}`
       )}
       style={style}
