@@ -34,7 +34,7 @@ const PianoKey: React.FC<PianoKeyProps> = ({
           ? "h-32 bg-[#5474b4] border border-[#405a96] hover:bg-[#405a96] active:bg-[#344b7d] shadow-[0_0_10px_rgba(84,116,180,0.5)]"
           : isBlack
           ? "w-8 h-32 -mx-4 z-10 bg-[#5474b4] border border-[#405a96] hover:bg-[#405a96] active:bg-[#344b7d] shadow-[0_0_10px_rgba(84,116,180,0.5)]"
-          : `w-[52px] h-48 bg-[${whiteKeyColor}] border border-gray-200 hover:bg-[#7aa3c4] active:bg-[#689ab9]`
+          : `w-[52px] h-48 bg-[${whiteKeyColor}] border border-gray-200 hover:bg-[${whiteKeyColor}] active:bg-[${whiteKeyColor}]`
       )}
       style={style}
       onMouseDown={handleKeyPress}
@@ -45,4 +45,3 @@ const PianoKey: React.FC<PianoKeyProps> = ({
 };
 
 export default PianoKey;
-
