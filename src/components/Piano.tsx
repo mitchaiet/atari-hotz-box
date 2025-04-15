@@ -179,8 +179,16 @@ const Piano = () => {
   }));
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-[#333333] p-4 md:p-8">
-      <div className="flex flex-col rounded-lg shadow-2xl p-4 md:p-8 bg-slate-900 w-full max-w-[1400px] mx-auto 
+    <div 
+      className="flex justify-center items-center min-h-screen p-4 md:p-8"
+      style={{
+        backgroundImage: "url('/lovable-uploads/4398198e-27f0-4d6c-8559-13fd45538483.png')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
+      <div className="flex flex-col rounded-lg shadow-2xl p-4 md:p-8 bg-slate-900/90 backdrop-blur-sm w-full max-w-[1400px] mx-auto 
         border-[16px] border-[#403E43] 
         relative 
         before:absolute before:inset-0 
