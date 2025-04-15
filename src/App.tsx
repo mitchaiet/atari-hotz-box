@@ -15,7 +15,7 @@ const App = () => (
       <div 
         className="min-h-screen bg-cover bg-center bg-no-repeat fixed inset-0"
         style={{
-          backgroundImage: `url('/lovable-uploads/d0dbc5e4-baec-4295-8b47-0c4727047e14.png')`
+          backgroundImage: `url('/lovable-uploads/69375f25-dddf-4daa-844e-64091c929e0a.png')`
         }}
       >
         <Toaster />
