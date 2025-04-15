@@ -1,7 +1,12 @@
-
 import React, { useState, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { sendNoteOn, sendNoteOff, mapKeyToMIDINote, sendControlChange } from '@/utils/midiUtils';
+
+const emitDebugEvent = (type: string, message: string) => {
+  window.dispatchEvent(new CustomEvent('midi-debug', {
+    detail: { type, message }
+  }));
+};
 
 interface PianoKeyProps {
   note: string;
@@ -40,9 +45,16 @@ const PianoKey: React.FC<PianoKeyProps> = ({
     
     if (isCCControl && ccNumber !== undefined) {
       sendControlChange(ccNumber, 127);
+      emitDebugEvent('midi', `CC ${ccNumber} ON (127)`);
     } else {
       sendNoteOn(midiNote);
+      emitDebugEvent('midi', `Note ${note}${octave} ON (${midiNote})`);
     }
+    
+    emitDebugEvent(
+      'touch' in e ? 'touch' : 'mouse',
+      `${e.type} on ${note}${octave}`
+    );
     
     setIsPressed(true);
     onPress();
@@ -60,9 +72,16 @@ const PianoKey: React.FC<PianoKeyProps> = ({
     
     if (isCCControl && ccNumber !== undefined) {
       sendControlChange(ccNumber, 0);
+      emitDebugEvent('midi', `CC ${ccNumber} OFF (0)`);
     } else {
       sendNoteOff(midiNote);
+      emitDebugEvent('midi', `Note ${note}${octave} OFF (${midiNote})`);
     }
+    
+    emitDebugEvent(
+      'touch' in e ? 'touch' : 'mouse',
+      `${e.type} on ${note}${octave}`
+    );
     
     setIsPressed(false);
     touchIdRef.current = null;
@@ -88,6 +107,8 @@ const PianoKey: React.FC<PianoKeyProps> = ({
           touch.clientY <= rect.bottom
         );
       });
+      
+      emitDebugEvent('touch', `${e.type} on ${note}${octave} (${isPointerOver ? 'over' : 'out'})`);
     } else {
       // Mouse event
       isPointerOver = (
@@ -96,6 +117,8 @@ const PianoKey: React.FC<PianoKeyProps> = ({
         (e as React.MouseEvent).clientY >= rect.top &&
         (e as React.MouseEvent).clientY <= rect.bottom
       );
+      
+      emitDebugEvent('mouse', `${e.type} on ${note}${octave} (${isPointerOver ? 'over' : 'out'})`);
     }
 
     if (isPointerOver && !isPressed) {

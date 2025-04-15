@@ -3,9 +3,9 @@ import PianoKey from './PianoKey';
 import { Separator } from './ui/separator';
 import { initMIDI, isMIDISupported, getMIDIOutputs, setMIDIOutput } from '@/utils/midiUtils';
 import { Button } from './ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Maximize, Minimize, HelpCircle } from 'lucide-react';
 import MIDIOutputSelector from './MIDIOutputSelector';
+import MIDIDebugConsole from './MIDIDebugConsole';
 
 const Piano = () => {
   const [midiInitialized, setMidiInitialized] = useState(false);
@@ -414,6 +414,7 @@ const Piano = () => {
           </div>
         </div>
       </div>
+      <MIDIDebugConsole />
     </div>
   );
 };
