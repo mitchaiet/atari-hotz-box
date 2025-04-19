@@ -1,7 +1,8 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { ScrollArea } from './ui/scroll-area';
 import { Button } from './ui/button';
-import { Terminal, MinimizeIcon, Numbers } from 'lucide-react';
+import { Terminal, MinimizeIcon, Hash } from 'lucide-react';
 import { useKeyOverlay } from '@/contexts/KeyOverlayContext';
 
 interface DebugMessage {
@@ -71,7 +72,7 @@ const MIDIDebugConsole = () => {
             className="h-6 w-6 text-slate-400 hover:text-slate-200"
             title={showNumbers ? "Hide key numbers" : "Show key numbers"}
           >
-            <Numbers className="h-4 w-4" />
+            <Hash className="h-4 w-4" />
           </Button>
           <Button
             onClick={() => setIsExpanded(false)}
