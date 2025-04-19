@@ -1,13 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { cn } from '@/lib/utils';
-import { sendNoteOn, sendNoteOff, mapKeyToMIDINote, sendControlChange } from '@/utils/midiUtils';
-import { useKeyOverlay } from '@/contexts/KeyOverlayContext';
 
-const emitDebugEvent = (type: string, message: string) => {
-  window.dispatchEvent(new CustomEvent('midi-debug', {
-    detail: { type, message }
-  }));
-};
+import React from 'react';
+import { cn } from '@/lib/utils';
+import { useKeyOverlay } from '@/contexts/KeyOverlayContext';
+import { useKeyInteraction } from '@/hooks/useKeyInteraction';
+import KeyNumber from './KeyNumber';
 
 interface PianoKeyProps {
   note: string;
@@ -23,226 +19,34 @@ interface PianoKeyProps {
   keyNumber: number;
 }
 
-const keyRegistry = new Map<string, {
-  ref: HTMLDivElement | null;
-  isPressed: boolean;
-  setIsPressed: (value: boolean) => void;
-  handlePress: (pressed: boolean, e: React.MouseEvent | React.TouchEvent) => void;
-}>();
-
 const PianoKey: React.FC<PianoKeyProps> = ({ 
   note, 
   octave, 
   isBlack, 
   isTopKey, 
-  onPress, 
+  onPress,
   style, 
-  whiteKeyColor = '#F5F5F5', 
   className,
   isCCControl = false,
   ccNumber,
   keyNumber
 }) => {
   const { showNumbers } = useKeyOverlay();
-  const [isPressed, setIsPressed] = useState(false);
-  const touchIdRef = useRef<number | null>(null);
-  const keyRef = useRef<HTMLDivElement>(null);
-  const lastTouchTimeRef = useRef<number>(0);
   const keyId = `${note}-${octave}`;
 
-  useEffect(() => {
-    if (keyRef.current) {
-      keyRegistry.set(keyId, {
-        ref: keyRef.current,
-        isPressed,
-        setIsPressed,
-        handlePress: (pressed: boolean, e: React.MouseEvent | React.TouchEvent) => {
-          if (pressed) {
-            handleInteractionStart(e);
-          } else {
-            handleInteractionEnd(e);
-          }
-        }
-      });
-    }
-    
-    return () => {
-      keyRegistry.delete(keyId);
-    };
-  }, [keyId, isPressed]);
-
-  const handleInteractionStart = (e: React.MouseEvent | React.TouchEvent) => {
-    e.preventDefault();
-    if (isPressed) return;
-
-    const midiNote = mapKeyToMIDINote(note, octave);
-    
-    if (isCCControl && ccNumber !== undefined) {
-      sendControlChange(ccNumber, 127);
-      emitDebugEvent('midi', `CC ${ccNumber} ON (127)`);
-    } else {
-      sendNoteOn(midiNote);
-      emitDebugEvent('midi', `Note ${note}${octave} ON (${midiNote})`);
-    }
-    
-    emitDebugEvent(
-      'touch' in e ? 'touch' : 'mouse',
-      `${e.type} on ${note}${octave}`
-    );
-    
-    setIsPressed(true);
-    onPress();
-
-    if ('touches' in e && e.touches.length > 0) {
-      touchIdRef.current = e.touches[0].identifier;
-    }
-  };
-
-  const handleInteractionEnd = (e: React.MouseEvent | React.TouchEvent) => {
-    e.preventDefault();
-    if (!isPressed) return;
-    
-    const midiNote = mapKeyToMIDINote(note, octave);
-    
-    if (isCCControl && ccNumber !== undefined) {
-      sendControlChange(ccNumber, 0);
-      emitDebugEvent('midi', `CC ${ccNumber} OFF (0)`);
-    } else {
-      sendNoteOff(midiNote);
-      emitDebugEvent('midi', `Note ${note}${octave} OFF (${midiNote})`);
-    }
-    
-    emitDebugEvent(
-      'touch' in e ? 'touch' : 'mouse',
-      `${e.type} on ${note}${octave}`
-    );
-    
-    setIsPressed(false);
-    touchIdRef.current = null;
-  };
-
-  const handleGlobalTouchMove = (e: TouchEvent) => {
-    const now = Date.now();
-    if (now - lastTouchTimeRef.current < 16) {
-      return;
-    }
-    lastTouchTimeRef.current = now;
-
-    Array.from(e.touches).forEach(touch => {
-      const touchX = touch.clientX;
-      const touchY = touch.clientY;
-      
-      const keysUnderTouch = new Set<string>();
-      
-      keyRegistry.forEach((keyData, id) => {
-        if (!keyData.ref) return;
-        
-        const rect = keyData.ref.getBoundingClientRect();
-        const isPointInside = 
-          touchX >= rect.left && 
-          touchX <= rect.right && 
-          touchY >= rect.top && 
-          touchY <= rect.bottom;
-        
-        if (isPointInside) {
-          keysUnderTouch.add(id);
-          
-          if (!keyData.isPressed) {
-            keyData.handlePress(true, e as unknown as React.TouchEvent);
-            emitDebugEvent('touch', 
-              `Touch entered ${id} at (${Math.round(touchX)},${Math.round(touchY)}) - bounds: (${Math.round(rect.left)},${Math.round(rect.top)})-(${Math.round(rect.right)},${Math.round(rect.bottom)})`
-            );
-          }
-        }
-      });
-      
-      keyRegistry.forEach((keyData, id) => {
-        if (keyData.isPressed && !keysUnderTouch.has(id)) {
-          keyData.handlePress(false, e as unknown as React.TouchEvent);
-          emitDebugEvent('touch', 
-            `Touch left ${id}`
-          );
-        }
-      });
-    });
-
-    if (e.touches.length === 0) {
-      keyRegistry.forEach((keyData, id) => {
-        if (keyData.isPressed) {
-          keyData.handlePress(false, e as unknown as React.TouchEvent);
-          emitDebugEvent('touch', `Touch ended ${id}`);
-        }
-      });
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('touchmove', handleGlobalTouchMove, { passive: false });
-    document.addEventListener('touchend', (e) => {
-      if (e.touches.length === 0 && isPressed) {
-        handleInteractionEnd(e as unknown as React.TouchEvent);
-      }
-    });
-    
-    return () => {
-      document.removeEventListener('touchmove', handleGlobalTouchMove);
-    };
-  }, [isPressed]);
-
-  const handleInteractionMove = (e: React.MouseEvent | React.TouchEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    if (!keyRef.current) return;
-
-    const now = Date.now();
-    if (now - lastTouchTimeRef.current < 16) {
-      return;
-    }
-    lastTouchTimeRef.current = now;
-
-    const rect = keyRef.current.getBoundingClientRect();
-    let isPointerOver = false;
-
-    if ('touches' in e) {
-      const touchList = Array.from(e.touches);
-      isPointerOver = touchList.some(touch => {
-        const isOver = (
-          touch.clientX >= rect.left &&
-          touch.clientX <= rect.right &&
-          touch.clientY >= rect.top &&
-          touch.clientY <= rect.bottom
-        );
-        return isOver;
-      });
-      
-      const touchCoordinates = touchList.map(touch => 
-        `(${Math.round(touch.clientX)},${Math.round(touch.clientY)})`
-      ).join(', ');
-      
-      emitDebugEvent('touch', 
-        `${e.type} on ${note}${octave} - coords: ${touchCoordinates} - ${isPointerOver ? 'over' : 'out'} - bounds: (${Math.round(rect.left)},${Math.round(rect.top)})-(${Math.round(rect.right)},${Math.round(rect.bottom)})`
-      );
-    } else {
-      const mouseEvent = e as React.MouseEvent;
-      isPointerOver = (
-        mouseEvent.clientX >= rect.left &&
-        mouseEvent.clientX <= rect.right &&
-        mouseEvent.clientY >= rect.top &&
-        mouseEvent.clientY <= rect.bottom
-      );
-      
-      emitDebugEvent('mouse', 
-        `${e.type} on ${note}${octave} - coords: (${Math.round(mouseEvent.clientX)},${Math.round(mouseEvent.clientY)}) - ${isPointerOver ? 'over' : 'out'}`
-      );
-    }
-
-    if (isPointerOver && !isPressed) {
-      handleInteractionStart(e);
-    } else if (!isPointerOver && isPressed) {
-      handleInteractionEnd(e);
-    }
-  };
+  const {
+    keyRef,
+    isPressed,
+    handleInteractionStart,
+    handleInteractionEnd,
+    handleInteractionMove
+  } = useKeyInteraction({
+    note,
+    octave,
+    isCCControl,
+    ccNumber,
+    keyId
+  });
 
   return (
     <div
@@ -272,13 +76,7 @@ const PianoKey: React.FC<PianoKeyProps> = ({
       aria-label={`${note}${octave}`}
       aria-pressed={isPressed}
     >
-      {showNumbers && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-xs font-mono bg-black/50 text-white px-1 rounded">
-            {keyNumber}
-          </span>
-        </div>
-      )}
+      <KeyNumber show={showNumbers} number={keyNumber} />
     </div>
   );
 };
