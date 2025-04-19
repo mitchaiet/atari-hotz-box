@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import PianoKey from './PianoKey';
 import { Separator } from './ui/separator';
@@ -178,6 +177,9 @@ const Piano = () => {
     }
   }));
 
+  // Assign unique numbers to each key group
+  let keyCounter = 1;
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-[#333333] p-4 md:p-8">
       <div className="flex flex-col rounded-lg shadow-2xl p-4 md:p-8 bg-slate-900 w-full max-w-[1400px] mx-auto 
@@ -254,6 +256,7 @@ const Piano = () => {
                 className="w-full md:w-[104px]"
                 isCCControl={true}
                 ccNumber={60 + index}
+                keyNumber={keyCounter++}
               />
             ))}
           </div>
@@ -276,6 +279,7 @@ const Piano = () => {
                       className="w-full md:w-[104px]"
                       isCCControl={true}
                       ccNumber={40 + (groupIndex * 3) + buttonIndex}
+                      keyNumber={keyCounter++}
                     />
                   ))}
                 </div>
@@ -300,6 +304,7 @@ const Piano = () => {
                   style={{width: undefined}}
                   isCCControl={true}
                   ccNumber={index}
+                  keyNumber={keyCounter++}
                 />
               ))}
             </div>
@@ -317,6 +322,7 @@ const Piano = () => {
                     onPress={() => handleKeyPress(noteObj.note, octave)}
                     whiteKeyColor="#8cb4d5"
                     className={noteObj.isBlack ? undefined : "flex-1 bg-[#8cb4d5]"}
+                    keyNumber={keyCounter++}
                   />
                 );
               })}
@@ -339,6 +345,7 @@ const Piano = () => {
                   style={{width: undefined}}
                   isCCControl={true}
                   ccNumber={16 + index}
+                  keyNumber={keyCounter++}
                 />
               ))}
             </div>
@@ -363,6 +370,7 @@ const Piano = () => {
                   className="flex-1"
                   isCCControl={true}
                   ccNumber={80 + index}
+                  keyNumber={keyCounter++}
                 />
               ))}
             </div>
@@ -386,6 +394,7 @@ const Piano = () => {
                       className="w-full md:w-[104px]"
                       isCCControl={true}
                       ccNumber={52 + (groupIndex * 3) + buttonIndex}
+                      keyNumber={keyCounter++}
                     />
                   ))}
                 </div>
@@ -411,6 +420,7 @@ const Piano = () => {
                 className="w-full md:w-[104px]"
                 isCCControl={true}
                 ccNumber={100 + index}
+                keyNumber={keyCounter++}
               />
             ))}
           </div>

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { sendNoteOn, sendNoteOff, mapKeyToMIDINote, sendControlChange } from '@/utils/midiUtils';
+import { useKeyOverlay } from '@/contexts/KeyOverlayContext';
 
 const emitDebugEvent = (type: string, message: string) => {
   window.dispatchEvent(new CustomEvent('midi-debug', {
@@ -19,9 +20,9 @@ interface PianoKeyProps {
   className?: string;
   isCCControl?: boolean;
   ccNumber?: number;
+  keyNumber: number;
 }
 
-// Create a global map to track all piano key elements and their states
 const keyRegistry = new Map<string, {
   ref: HTMLDivElement | null;
   isPressed: boolean;
@@ -39,15 +40,16 @@ const PianoKey: React.FC<PianoKeyProps> = ({
   whiteKeyColor = '#F5F5F5', 
   className,
   isCCControl = false,
-  ccNumber
+  ccNumber,
+  keyNumber
 }) => {
+  const { showNumbers } = useKeyOverlay();
   const [isPressed, setIsPressed] = useState(false);
   const touchIdRef = useRef<number | null>(null);
   const keyRef = useRef<HTMLDivElement>(null);
   const lastTouchTimeRef = useRef<number>(0);
   const keyId = `${note}-${octave}`;
 
-  // Register this key in the global registry
   useEffect(() => {
     if (keyRef.current) {
       keyRegistry.set(keyId, {
@@ -119,24 +121,19 @@ const PianoKey: React.FC<PianoKeyProps> = ({
     touchIdRef.current = null;
   };
 
-  // Improved touch handling using a global approach
   const handleGlobalTouchMove = (e: TouchEvent) => {
-    // Throttle the touch events
     const now = Date.now();
-    if (now - lastTouchTimeRef.current < 16) { // ~60fps
+    if (now - lastTouchTimeRef.current < 16) {
       return;
     }
     lastTouchTimeRef.current = now;
 
-    // Process each touch point
     Array.from(e.touches).forEach(touch => {
       const touchX = touch.clientX;
       const touchY = touch.clientY;
       
-      // Create a list to track which keys we've found the touch over
       const keysUnderTouch = new Set<string>();
       
-      // Check all keys to see which one(s) the touch is over
       keyRegistry.forEach((keyData, id) => {
         if (!keyData.ref) return;
         
@@ -150,7 +147,6 @@ const PianoKey: React.FC<PianoKeyProps> = ({
         if (isPointInside) {
           keysUnderTouch.add(id);
           
-          // If we're not already pressed and we're inside, trigger press
           if (!keyData.isPressed) {
             keyData.handlePress(true, e as unknown as React.TouchEvent);
             emitDebugEvent('touch', 
@@ -160,7 +156,6 @@ const PianoKey: React.FC<PianoKeyProps> = ({
         }
       });
       
-      // Now release any keys that are pressed but not under the touch
       keyRegistry.forEach((keyData, id) => {
         if (keyData.isPressed && !keysUnderTouch.has(id)) {
           keyData.handlePress(false, e as unknown as React.TouchEvent);
@@ -171,7 +166,6 @@ const PianoKey: React.FC<PianoKeyProps> = ({
       });
     });
 
-    // If no touches remain, release all pressed keys
     if (e.touches.length === 0) {
       keyRegistry.forEach((keyData, id) => {
         if (keyData.isPressed) {
@@ -182,11 +176,9 @@ const PianoKey: React.FC<PianoKeyProps> = ({
     }
   };
 
-  // Set up global touch move handler
   useEffect(() => {
     document.addEventListener('touchmove', handleGlobalTouchMove, { passive: false });
     document.addEventListener('touchend', (e) => {
-      // When all touches end, make sure to reset the pressed state
       if (e.touches.length === 0 && isPressed) {
         handleInteractionEnd(e as unknown as React.TouchEvent);
       }
@@ -197,7 +189,6 @@ const PianoKey: React.FC<PianoKeyProps> = ({
     };
   }, [isPressed]);
 
-  // Handle individual element interactions
   const handleInteractionMove = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -205,7 +196,7 @@ const PianoKey: React.FC<PianoKeyProps> = ({
     if (!keyRef.current) return;
 
     const now = Date.now();
-    if (now - lastTouchTimeRef.current < 16) { // ~60fps
+    if (now - lastTouchTimeRef.current < 16) {
       return;
     }
     lastTouchTimeRef.current = now;
@@ -280,7 +271,15 @@ const PianoKey: React.FC<PianoKeyProps> = ({
       role="button"
       aria-label={`${note}${octave}`}
       aria-pressed={isPressed}
-    />
+    >
+      {showNumbers && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="text-xs font-mono bg-black/50 text-white px-1 rounded">
+            {keyNumber}
+          </span>
+        </div>
+      )}
+    </div>
   );
 };
 

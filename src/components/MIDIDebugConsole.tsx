@@ -1,8 +1,8 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { ScrollArea } from './ui/scroll-area';
 import { Button } from './ui/button';
-import { Terminal, MinimizeIcon, MaximizeIcon } from 'lucide-react';
+import { Terminal, MinimizeIcon, Numbers } from 'lucide-react';
+import { useKeyOverlay } from '@/contexts/KeyOverlayContext';
 
 interface DebugMessage {
   id: number;
@@ -12,6 +12,7 @@ interface DebugMessage {
 }
 
 const MIDIDebugConsole = () => {
+  const { showNumbers, toggleNumbers } = useKeyOverlay();
   const [messages, setMessages] = useState<DebugMessage[]>([]);
   const [isExpanded, setIsExpanded] = useState(false);
   const messageIdCounter = useRef(0);
@@ -64,6 +65,15 @@ const MIDIDebugConsole = () => {
         <h3 className="text-sm font-medium text-slate-200">Debug Console</h3>
         <div className="flex space-x-2">
           <Button
+            onClick={toggleNumbers}
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 text-slate-400 hover:text-slate-200"
+            title={showNumbers ? "Hide key numbers" : "Show key numbers"}
+          >
+            <Numbers className="h-4 w-4" />
+          </Button>
+          <Button
             onClick={() => setIsExpanded(false)}
             variant="ghost"
             size="icon"
@@ -106,4 +116,3 @@ const MIDIDebugConsole = () => {
 };
 
 export default MIDIDebugConsole;
-
